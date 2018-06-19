@@ -1,0 +1,69 @@
+From ea6968446bd4ee9239575bb80d4f3f479cd71e49 Mon Sep 17 00:00:00 2001
+From: Dinolek <dinolek@o2.pl>
+Date: Sun, 17 Jun 2018 18:19:00 +0200
+Subject: [PATCH] healthd: Support yellow led as path
+
+Change-Id: Ia4412fbb1888a230b95c8570a02dba453bbbd9dd
+---
+ healthd/Android.mk               |  1 +
+ healthd/healthd_mode_charger.cpp | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/healthd/Android.mk b/healthd/Android.mk
+index f509ace..962c5e5 100644
+--- a/healthd/Android.mk
++++ b/healthd/Android.mk
+@@ -32,6 +32,7 @@ LOCAL_UNSTRIPPED_PATH := $(TARGET_ROOT_OUT_SBIN_UNSTRIPPED)
+ LOCAL_CFLAGS := -D__STDC_LIMIT_MACROS -Werror
+ 
+ HEALTHD_CHARGER_DEFINES := RED_LED_PATH \
++    YELLOW_LED_PATH \
+     GREEN_LED_PATH \
+     BLUE_LED_PATH \
+     BLINK_PATH \
+diff --git a/healthd/healthd_mode_charger.cpp b/healthd/healthd_mode_charger.cpp
+index 6df9f12..89e3968 100644
+--- a/healthd/healthd_mode_charger.cpp
++++ b/healthd/healthd_mode_charger.cpp
+@@ -185,6 +185,9 @@ enum {
+     RED_LED = 0x01 << 0,
+     GREEN_LED = 0x01 << 1,
+     BLUE_LED = 0x01 << 2,
++#ifdef YELLOW_LED_PATH
++    YELLOW_LED = 0x01 << 3,
++#endif
+ };
+ 
+ #ifndef NO_CHARGER_LED
+@@ -193,9 +196,16 @@ struct led_ctl {
+     const char *path;
+ };
+ 
++#ifdef YELLOW_LED_PATH
++struct led_ctl leds[4] =
++#else
+ struct led_ctl leds[3] =
++#endif
+     {{RED_LED, RED_LED_PATH},
+     {GREEN_LED, GREEN_LED_PATH},
++#ifdef YELLOW_LED_PATH
++    {YELLOW_LED, YELLOW_LED_PATH},
++#endif
+     {BLUE_LED, BLUE_LED_PATH}};
+ 
+ struct soc_led_color_mapping {
+@@ -205,7 +215,11 @@ struct soc_led_color_mapping {
+ 
+ struct soc_led_color_mapping soc_leds[3] = {
+     {15, RED_LED},
++#ifdef YELLOW_LED_PATH
++    {90, YELLOW_LED},
++#else
+     {90, RED_LED | GREEN_LED},
++#endif
+     {100, GREEN_LED},
+ };
+ #endif
+-- 
+2.7.4
+

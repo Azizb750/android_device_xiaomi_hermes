@@ -1,0 +1,26 @@
+From e126c3a0941e1102c0bf24ca8b9b61d35efdc9be Mon Sep 17 00:00:00 2001
+From: Dinolek <dinolek@o2.pl>
+Date: Mon, 18 Jun 2018 10:25:45 +0200
+Subject: [PATCH] rootdir: Fix mediaserver permissions for camera
+
+Change-Id: I2db6dc111e11465b7434db99282cd7705a91aa2a
+---
+ rootdir/init.rc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/rootdir/init.rc b/rootdir/init.rc
+index cfcab62..51fcb4e 100644
+--- a/rootdir/init.rc
++++ b/rootdir/init.rc
+@@ -678,7 +678,7 @@ service drm /system/bin/drmserver
+ service media /system/bin/mediaserver
+     class main
+     user media
+-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm qcom_diag
++    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm qcom_diag media system
+     ioprio rt 4
+ 
+ # One shot invocation to deal with encrypted volume.
+-- 
+2.7.4
+

@@ -1,0 +1,94 @@
+# xen0n fixes
+# init
+# debugfs mount
+allow init debugfs:dir { mounton };
+
+# /dev/wmtWifi writes
+allow init wmtWifi_device:chr_file { write };
+
+# proj-dev-setup
+# /data/BT_Addr
+type xen0n_mtk_bt_addr_file, file_type;
+allow nvram_daemon xen0n_mtk_bt_addr_file:file { open getattr setattr read write };
+
+# mtkbt
+type mtkbt_exec, exec_type, file_type;
+type mtkbt, domain;
+init_daemon_domain(mtkbt)
+
+allow mtkbt self:capability { net_admin };
+allow mtkbt mtkbt:netlink_socket { bind create read setopt write };
+
+# /dev/socket/bt.int.adp write
+type xen0n_mtk_bt_int_adp_socket, file_type;
+allow mtkbt xen0n_mtk_bt_int_adp_socket:sock_file { create unlink setattr write };
+
+
+# Meizu additions
+# tfa9890
+type tfa9890_i2c_device, dev_type;
+
+allow mediaserver tfa9890_i2c_device:chr_file { open ioctl read write };
+
+# camera
+type LC898212XD_device, dev_type;
+
+allow mediaserver LC898212XD_device:chr_file { open ioctl read write };
+
+# /system/xbin/MPED
+type mped_exec, exec_type, file_type;
+type mped_data_file, file_type;
+# no filetrans_pattern
+#type mped_mnl2mpe_socket, file_type;
+#type mped_mpe2mnl_socket, file_type;
+type mped_server_socket, file_type;
+type mped, domain;
+init_daemon_domain(mped)
+file_type_auto_trans(mped, system_data_file, mped_data_file)
+#filetrans_pattern(mped, mped_data_file, mped_mnl2mpe_socket, "mnl2mpe")
+
+allow mnld mped_data_file:dir { write remove_name add_name };
+allow mnld mped_data_file:sock_file { create unlink setattr };
+
+allow mped system_data_file:dir { remove_name };
+allow mped mped_data_file:sock_file { unlink };
+allow mped mped_server_socket:sock_file { unlink };
+
+# common vibration types
+type tspdrv_device, dev_type;
+type immvibe_pipe, file_type;
+
+# immvibed
+type immvibed_exec, exec_type, file_type;
+type immvibed, domain;
+init_daemon_domain(immvibed)
+
+allow immvibed self:capability { dac_override setuid setgid sys_nice };
+allow immvibed tspdrv_device:chr_file { open ioctl write };
+allow immvibed immvibe_pipe:dir { add_name write };
+allow immvibed immvibe_pipe:fifo_file { create_file_perms };
+
+# openimmvibed
+type openimmvibed_data_file, file_type, data_file_type;
+type openimmvibed_force_prop, property_type;
+type openimmvibed_control_socket, file_type;
+
+type openimmvibed_exec, exec_type, file_type;
+type openimmvibed, domain;
+init_daemon_domain(openimmvibed)
+file_type_auto_trans(openimmvibed, system_data_file, openimmvibed_data_file)
+
+allow openimmvibed tspdrv_device:chr_file { open ioctl write };
+
+allow openimmvibed immvibe_pipe:dir { add_name create getattr write };
+allow openimmvibed immvibe_pipe:sock_file { create relabelfrom getattr };
+allow openimmvibed openimmvibed_control_socket:sock_file { relabelto write };
+
+# for legacy setting migration
+allow openimmvibed openimmvibed_data_file:file { open unlink };
+allow openimmvibed openimmvibed_data_file:dir { remove_name write };
+
+set_prop(openimmvibed, openimmvibed_force_prop)
+
+# consumer of control socket
+unix_socket_connect(system_server, openimmvibed_control, openimmvibed)
