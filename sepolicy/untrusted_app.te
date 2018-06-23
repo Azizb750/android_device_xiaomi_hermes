@@ -58,9 +58,3 @@ allow untrusted_app vtservice:file { read getattr open };
 # Operation : Migration
 # Purpose : allow untrusted_app to find pq_service
 allow untrusted_app pq_service:service_manager { find };
-
-# Date : 2015/10/27
-# Operation : Feature Developing
-# Purpose : allow untrusted_app to find mw_blacklist
-# Package: com.mediatek.multiwindow.service
-allow untrusted_app mtk_mwblacklist_service:service_manager find;

@@ -3,7 +3,7 @@
 # ============
 
 # Date : WK14.32
-# Operation : AEE UT 
+# Operation : AEE UT
 # Purpose : for AEE module
 domain_auto_trans(debuggerd, dmlog_exec, dmlog)
 
@@ -20,6 +20,10 @@ allow debuggerd camera_isp_device:chr_file r_file_perms;
 
 # AED start: /dev/block/expdb
 allow debuggerd block_device:dir search;
+
+# debuggerd open/dev/mtd/mtd12 failed(expdb)
+allow debuggerd mtd_device:dir create_dir_perms;
+allow debuggerd mtd_device:chr_file { read write ioctl open };
 
 allow debuggerd userdata_block_device:blk_file create_file_perms;
 # NE flow: /dev/RT_Monitor
@@ -154,7 +158,7 @@ allow debuggerd sf_bqdump_data_file:file { read getattr unlink open };
 
 allow debuggerd custom_file:dir search;
 
-# avc:  denied  { read } for  pid=4503 comm="screencap" name="secmem0" dev="proc" 
+# avc:  denied  { read } for  pid=4503 comm="screencap" name="secmem0" dev="proc"
 allow debuggerd proc_secmem:file r_file_perms;
 
 #add debuggerd policy
@@ -187,9 +191,13 @@ allow debuggerd window_service:service_manager find;
 # Date: W15.37
 # Operation: daily build violation on branch trunk-m0.tk
 # Purpose: Add rules for Violation
-allow debuggerd proc_lk_env:file { read write open };
+allow debuggerd proc_lk_env:file { read write ioctl open };
 
 # Date: W15.39
 # Operation: daily build violation on branch trunk-m0.tk
 # Purpose: Allow debuggerd to find gfxinfo_service
 allow debuggerd gfxinfo_service:service_manager find;
+
+#scp file dumpstate
+allow debuggerd sysfs_scp:dir search;
+allow debuggerd sysfs_scp:file { read open };

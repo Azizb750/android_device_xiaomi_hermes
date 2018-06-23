@@ -184,3 +184,11 @@ allow radio nfc_service:service_manager find;
 # Operation: Program binary service
 # Purpose : Add permission for program binary service find from ServiceManager.
 allow radio program_binary_service:service_manager find;
+
+# Date: 2015/10/22
+# Operation: Run STK
+# Purpose : Add permission for SIM tool kit
+allow radio sw_sync_device:chr_file getattr;
+allow radio sw_sync_device:chr_file { read write };
+allow radio sw_sync_device:chr_file open;
+allow radio sw_sync_device:chr_file ioctl;

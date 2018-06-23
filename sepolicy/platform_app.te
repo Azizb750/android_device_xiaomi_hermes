@@ -235,7 +235,7 @@ allow platform_app nfc_service:service_manager find;
 # Operation : SQC
 # Purpose : allow settings get file of ntfs device
 # Package: com.android.settings
-allow platform_app fuseblk:dir { read open write search add_name remove_name rmdir };
+allow platform_app fuseblk:dir { read open write search add_name };
 
 # Date : 2015/09/19
 # Operation : Migration
@@ -258,9 +258,9 @@ allow platform_app debugfs:file getattr;
 # Operation : jg_jinchuanqin
 # Purpose :[ALPS02350168]allow Settings get file of ntfs device
 # Package: com.android.settings
-allow platform_app fuseblk:file { read open write create getattr unlink};
-# Date : 2015/10/27
-# Operation : Feature Developing
-# Purpose : allow platform_app to find mw_blacklist
-# Package: com.mediatek.multiwindow.service
-allow platform_app mtk_mwblacklist_service:service_manager find;
+allow platform_app fuseblk:file { read open write create getattr };
+
+# Date : 2015/10/30
+# Operation : Migration
+# Purpose : allow platform_app to find aal_service
+allow platform_app aal_service:service_manager { find };

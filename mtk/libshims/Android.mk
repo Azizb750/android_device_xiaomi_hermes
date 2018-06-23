@@ -11,7 +11,7 @@ include $(BUILD_SHARED_LIBRARY)
 # libshim_xlog
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := xlog.c
-LOCAL_SHARED_LIBRARIES := liblog
+LOCAL_SHARED_LIBRARIES := libbinder liblog
 LOCAL_MODULE := libshim_xlog
 LOCAL_CFLAGS := -Wno-unused-variable -Wno-unused-parameter
 include $(BUILD_SHARED_LIBRARY)

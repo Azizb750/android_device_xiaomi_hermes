@@ -137,7 +137,6 @@ ctl.s62xd     u:object_r:ctl_s62xd_prop:s0
 ctl.bmm056d     u:object_r:ctl_bmm056d_prop:s0
 ctl.akmd8963     u:object_r:ctl_akmd8963_prop:s0
 ctl.akmd09911     u:object_r:ctl_akmd09911_prop:s0
-ctl.qmc6983d     u:object_r:ctl_qmc6983d_prop:s0
 ctl.akmd09912     u:object_r:ctl_akmd09912_prop:s0
 ctl.geomagneticd     u:object_r:ctl_geomagneticd_prop:s0
 ctl.orientationd     u:object_r:ctl_orientationd_prop:s0
@@ -167,7 +166,6 @@ ctl.pppd_gprs   u:object_r:pppd_gprs_prop:s0
 
 #=============allow wifi offload deamon  ==============
 net.wo.   u:object_r:mtk_wod_prop:s0
-persist.net.wo.   u:object_r:persist_wod_prop:s0
 
 # DOLBY_START
 dolby.audio             u:object_r:audio_prop:s0
@@ -188,8 +186,3 @@ ril.volte.              u:object_r:volte_prop:s0
 
 #=============allow hotknot deamon  ==============
 hotknot.    u:object_r:hotknot_prop:s0
-
-
-# xen0n
-#vold.post_fs_data_done u:object_r:xen0n_vold_post_fs_data_done_prop:s0
-persist.openimmvibe.vibe_force u:object_r:openimmvibed_force_prop:s0

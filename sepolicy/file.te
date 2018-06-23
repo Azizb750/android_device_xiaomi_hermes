@@ -83,6 +83,7 @@ type persist_data_file, file_type, data_file_type;
 type key_install_data_file, file_type, data_file_type;
 type nvram_data_file, file_type, data_file_type;
 type nvdata_file, file_type, data_file_type;
+type cct_data_file, file_type, data_file_type;
 type mediaserver_data_file, file_type, data_file_type;
 
 # 20131213 KKMR1_CQ_CTS_02

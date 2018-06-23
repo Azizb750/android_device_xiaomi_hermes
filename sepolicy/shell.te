@@ -89,8 +89,8 @@ allow shell spm_loader_exec:file rx_file_perms;
 # Purpose : for accessing /storage/emulated/legacy
 #           It's mounted as tmpfs file.
 #           CTS: testSyncFiles_extStorageVariable & testSyncFiles_normal
-#allow shell tmpfs:lnk_file read;
-#allow shell tmpfs:lnk_file getattr;
+allow shell tmpfs:lnk_file read;
+allow shell tmpfs:lnk_file getattr;
 allow shell block_device:dir search;
 
 # Date : WK14.47

@@ -58,3 +58,8 @@ allow adbd sf_rtt_file:dir getattr;
 # Operation : Migration
 # Purpose: Allow adbd to read binder from surfaceflinger
 allow adbd surfaceflinger:fifo_file {read write};
+
+# Data: 2015/10/28
+# Stage: SQC
+# Purpose: [SystemUI] Allow IMG GPU to touch sw_sync
+allow adbd sw_sync_device:chr_file { read write getattr open };

@@ -20,6 +20,7 @@ type mt9p012_device, dev_type;
 type mt6516_jpeg_device, dev_type;
 type FM50AF_device, dev_type;
 type DW9714AF_device, dev_type;
+type DW9761BAF_device, dev_type;
 type DW9814AF_device, dev_type;
 type AK7345AF_device, dev_type;
 type DW9714A_device, dev_type;
@@ -45,16 +46,12 @@ type smartpa1_device, dev_type;
 type uio0_device, dev_type;
 type xt_qtaguid_device, dev_type;
 type rfkill_device, dev_type;
-type sw_sync_device, dev_type;
+type sw_sync_device, dev_type, mlstrustedobject;
 type sec_device, dev_type;
 type hid_keyboard_device, dev_type;
 type btn_device, dev_type;
 type uinput_device, dev_type;
 type TV_out_device, dev_type;
-# Vanzo:yinjun on: Mon, 13 Apr 2015 16:38:07 +0800
-# add remoteir
-type remote_ctrl_dev_device, dev_type;
-# End of Vanzo: yinjun
 type camera_sysram_device, dev_type;
 type camera_isp_device, dev_type;
 type camera_fdvt_device, dev_type;
@@ -169,6 +166,7 @@ type hrm_device, dev_type;
 type lens_device, dev_type;
 type nvdata_device, dev_type;
 type expdb_block_device, dev_type;
+type misc2_block_device, dev_type;
 type logo_block_device, dev_type;
 type para_block_device, dev_type;
 type tee_block_device, dev_type;

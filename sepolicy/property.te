@@ -129,7 +129,6 @@ type ctl_msensord_prop, property_type;
 type ctl_akmd8963_prop, property_type;
 type ctl_s62xd_prop, property_type;
 type ctl_akmd09911_prop, property_type;
-type ctl_qmc6983d_prop, property_type;
 type ctl_akmd09912_prop, property_type;
 type ctl_bmm050d_prop, property_type;
 type ctl_bmm056d_prop, property_type;
@@ -158,7 +157,6 @@ type pppd_gprs_prop, property_type;
 
 #=============allow wifi offload deamon  ==============
 type mtk_wod_prop, property_type;
-type persist_wod_prop, property_type;
 
 #=============allow program binary deamon  ==============
 type program_binary_prop, property_type;

@@ -36,11 +36,10 @@ PRODUCT_PACKAGES += power.mt6795
 PRODUCT_PACKAGES += \
     hostapd \
     lib_driver_cmd_mt66xx \
+    libwifi-hal-mt66xx \
     libwpa_client \
+    wifi_hal \
     wpa_supplicant
-
-# FM
-#PRODUCT_PACKAGES += FmRadio
 
 # Graphic
 PRODUCT_PACKAGES += \
@@ -50,6 +49,9 @@ PRODUCT_PACKAGES += \
 # GPS
 PRODUCT_PACKAGES += libcurl
 
+# DRM
+PRODUCT_PACKAGES += libmockdrmcryptoplugin
+
 # Audio
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
@@ -57,6 +59,7 @@ PRODUCT_PACKAGES += \
     audio.usb.default \
     libaudio-resampler \
     libtinyalsa \
+    libtinycompress \
     libtinyxml
 
 # Stlport

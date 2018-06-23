@@ -2,6 +2,9 @@
 
 ### TODO:  
   * Fix fm radio  
+  * Fix signal problems__
+  * Fix stuck of bluetooth sometimes  
+  * Investigate why sepolicy is not included  
   * Rewrite sepolicy  
   * Check if any thing else doesn't work  
 

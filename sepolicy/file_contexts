@@ -47,11 +47,12 @@
 /data/misc/wpa_supplicant(/.*)? u:object_r:wpa_supplicant_data_file:s0
 /data/nfc_socket(/.*)? u:object_r:nfc_socket:s0
 /data/nvram(/.*)? u:object_r:nvram_data_file:s0
+/data/cct(/.*)? u:object_r:cct_data_file:s0
 /data/md3(/.*)? u:object_r:c2k_file:s0
 /nvdata(/.*)? u:object_r:nvdata_file:s0
-/data/SF_dump(/.*)? u:object_r:sf_bqdump_data_file:s0
-/data/ipsec(/.*)? u:object_r:wod_ipsec_conf_file:s0
-/data/ipsec/wo(/.*)? u:object_r:wod_apn_conf_file:s0
+/data/SF_dump(./*)? u:object_r:sf_bqdump_data_file:s0
+/data/ipsec(./*)? u:object_r:wod_ipsec_conf_file:s0
+/data/ipsec/wo(./*)? u:object_r:wod_apn_conf_file:s0
 /data/data_tmpfs_log(/.*)? u:object_r:data_tmpfs_log_file:s0
 /data/tmp_mnt/data_tmpfs_log(/.*)? u:object_r:data_tmpfs_log_file:s0
 /data/setkey.conf        u:object_r:ims_ipsec_data_file:s0
@@ -77,10 +78,6 @@
 /dev/BOOT(/.*)? u:object_r:BOOT_device:s0
 /dev/btif(/.*)? u:object_r:btif_device:s0
 /dev/btn(/.*)? u:object_r:btn_device:s0
-# Vanzo:yinjun on: Mon, 13 Apr 2015 16:39:08 +0800
-# add remoteir
-/dev/remote_ctrl_dev u:object_r:remote_ctrl_dev_device:s0
-# End of Vanzo: yinjun
 /dev/BU6429AF(/.*)? u:object_r:BU6429AF_device:s0
 /dev/BU64745GWZAF(/.*)? u:object_r:BU64745GWZAF_device:s0
 /dev/MAINAF(/.*)? u:object_r:MAINAF_device:s0
@@ -98,6 +95,7 @@
 /dev/devmap(/.*)? u:object_r:devmap_device:s0
 /dev/dummy_cam_cal(/.*)? u:object_r:dummy_cam_cal_device:s0
 /dev/DW9714AF(/.*)? u:object_r:DW9714AF_device:s0
+/dev/DW9761BAF(/.*)? u:object_r:DW9761BAF_device:s0
 /dev/DW9814AF(/.*)? u:object_r:DW9814AF_device:s0
 /dev/AK7345AF(/.*)? u:object_r:AK7345AF_device:s0
 /dev/DW9714A(/.*)? u:object_r:DW9714A_device:s0
@@ -234,9 +232,9 @@
 /dev/socket/rild-atci(/.*)? u:object_r:rild_atci_socket:s0
 /dev/socket/rild-vsim(/.*)? u:object_r:rild_vsim_socket:s0
 /dev/socket/rild-vsim-md2(/.*)? u:object_r:rild_vsim_md2_socket:s0
-#/dev/socket/rild-ctclient u:object_r:rild_ctclient_socket:s0
+/dev/socket/rild-ctclient u:object_r:rild_ctclient_socket:s0
 /dev/socket/rild-debug-md2(/.*)? u:object_r:rild_debug_md2_socket:s0
-#/dev/socket/rild-debug(/.*)? u:object_r:rild_debug_socket:s0
+/dev/socket/rild-debug(/.*)? u:object_r:rild_debug_socket:s0
 /dev/socket/rild-dongle(/.*)? u:object_r:rild-dongle_socket:s0
 /dev/socket/rild-md2(/.*)? u:object_r:rild_md2_socket:s0
 /dev/socket/rild-mtk-modem-md2(/.*)? u:object_r:rild_mtk_modem_md2_socket:s0
@@ -247,8 +245,8 @@
 /dev/socket/rild-mtk-ut(/.*)? u:object_r:rild_mtk_ut_socket:s0
 /dev/socket/rild-oem-md2(/.*)? u:object_r:rild_oem_md2_socket:s0
 /dev/socket/rild-oem(/.*)? u:object_r:rild_oem_socket:s0
-#/dev/socket/rild(/.*)? u:object_r:rild_socket:s0
-#/dev/socket/rild-via u:object_r:rild_via_socket:s0
+/dev/socket/rild(/.*)? u:object_r:rild_socket:s0
+/dev/socket/rild-via u:object_r:rild_via_socket:s0
 /dev/socket/rild-atci-c2k(/.*)? u:object_r:rild_atci_c2k_socket:s0
 /dev/socket/mal-mfi(/.*)? u:object_r:mal_mfi_socket:s0
 /dev/socket/rpc u:object_r:rpc_socket:s0
@@ -271,8 +269,8 @@
 /dev/socket/tunman(/.*)? u:object_r:tunman_socket:s0
 /dev/stpant(/.*)? u:object_r:stpant_device:s0
 /dev/stpbt(/.*)? u:object_r:stpbt_device:s0
-#/dev/stpgps        u:object_r:mnld_device:s0
-#/dev/stpgps(/.*)? u:object_r:stpgps_device:s0
+/dev/stpgps        u:object_r:mnld_device:s0
+/dev/stpgps(/.*)? u:object_r:stpgps_device:s0
 /dev/stpwmt(/.*)? u:object_r:stpwmt_device:s0
 /dev/sw_sync(/.*)? u:object_r:sw_sync_device:s0
 /dev/tgt(/.*)? u:object_r:tgt_device:s0
@@ -315,7 +313,9 @@
 /dev/block/platform/mtk-msdc\.0/by-name/proinfo  u:object_r:nvram_device:s0
 /dev/block/platform/mtk-msdc\.0/by-name/nvram  u:object_r:nvram_device:s0
 /dev/block/platform/mtk-msdc\.0/by-name/nvdata u:object_r:nvdata_device:s0
+/dev/block/platform/mtk-msdc\.0/by-name/frp  u:object_r:frp_block_device:s0
 /dev/block/platform/mtk-msdc\.0/by-name/expdb u:object_r:expdb_block_device:s0
+/dev/block/platform/mtk-msdc\.0/by-name/misc2 u:object_r:misc2_block_device:s0
 /dev/block/platform/mtk-msdc\.0/by-name/logo u:object_r:logo_block_device:s0
 /dev/block/platform/mtk-msdc\.0/by-name/para u:object_r:para_block_device:s0
 /dev/block/platform/mtk-msdc\.0/by-name/tee1 u:object_r:tee_block_device:s0
@@ -363,7 +363,6 @@
 /system/bin/aal u:object_r:aal_exec:s0
 /system/bin/aee_core_forwarder u:object_r:aee_core_forwarder_exec:s0
 /system/bin/akmd09911 u:object_r:akmd09911_exec:s0
-/system/bin/qmc6983d u:object_r:qmc6983d_exec:s0
 /system/bin/akmd09912 u:object_r:akmd09912_exec:s0
 /system/bin/akmd8963 u:object_r:akmd8963_exec:s0
 /system/bin/akmd8975 u:object_r:akmd8975_exec:s0
@@ -426,10 +425,6 @@
 /system/bin/muxreport u:object_r:muxreport_exec:s0
 /system/bin/netdiag u:object_r:netdiag_exec:s0
 /system/bin/nvram_agent_binder u:object_r:nvram_agent_binder_exec:s0
-# Vanzo:yucheng on: Tue, 27 Jan 2015 20:54:48 +0800
-# added for nvram backup
-/system/bin/nvram_backup_binder u:object_r:nvram_backup_binder_exec:s0
-# End of Vanzo: yucheng
 /system/bin/nvram_daemon u:object_r:nvram_daemon_exec:s0
 /system/bin/orientationd u:object_r:orientationd_exec:s0
 /system/bin/permission_check u:object_r:permission_check_exec:s0
@@ -481,6 +476,7 @@
 /system/bin/spm_loader u:object_r:spm_loader_exec:s0
 /system/bin/vtservice u:object_r:vtservice_exec:s0
 /system/bin/hotknot_native_service u:object_r:hotknot_native_exec:s0
+/system/bin/pppd_btdun u:object_r:pppd_btdun_exec:s0
 
 # Wallpaper file for smartbook
 /data/system/users/[0-9]+/smartbook_wallpaper	u:object_r:wallpaper_file:s0
@@ -488,92 +484,30 @@
 #fat on nand image
 /fat(/.*)?  u:object_r:fon_image_data_file:s0
 
+#########################################
+# Platform dependent label definitions
+#
 
-# xen0n fixes
-# it seems the block devices can only be labeled by absolute path
-/dev/block/mmcblk0p1  u:object_r:nvram_device:s0
-/dev/block/mmcblk0p2  u:object_r:nvram_device:s0
-/dev/block/mmcblk0p12 u:object_r:expdb_block_device:s0
-/dev/block/mmcblk0p11 u:object_r:logo_block_device:s0
-/dev/block/mmcblk0p10 u:object_r:para_block_device:s0
-/dev/block/mmcblk0p5 u:object_r:seccfg_block_device:s0
-/dev/block/mmcblk0p9 u:object_r:secro_block_device:s0
-/dev/block/mmcblk0p17 u:object_r:userdata_block_device:s0
-/dev/block/mmcblk0p16 u:object_r:cache_block_device:s0
-/dev/block/mmcblk0p8 u:object_r:recovery_block_device:s0
-/dev/block/mmcblk0p3 u:object_r:protect1_block_device:s0
-/dev/block/mmcblk0p4 u:object_r:protect2_block_device:s0
-/dev/block/mmcblk0p7 u:object_r:boot_block_device:s0
-
-# mysterious misses from regex matching
-/dev/stpbt  u:object_r:stpbt_device:s0
-/dev/stpgps u:object_r:mnld_device:s0
-/dev/stpwmt u:object_r:stpwmt_device:s0
-/dev/wmtWifi u:object_r:wmtWifi_device:s0
-/dev/socket/rild2-md2 u:object_r:rild2_md2_socket:s0
-/dev/socket/rild2 u:object_r:rild2_socket:s0
-/dev/socket/rild3 u:object_r:rild3_socket:s0
-/dev/socket/rild4 u:object_r:rild4_socket:s0
-/dev/socket/rild-mal u:object_r:rild_mal_socket:s0
-/dev/socket/rild-mal-at u:object_r:rild_mal_at_socket:s0
-/dev/socket/rild-mal-md2 u:object_r:rild_mal_md2_socket:s0
-/dev/socket/rild-mal-at-md2 u:object_r:rild_mal_at_md2_socket:s0
-/dev/socket/rild-ims u:object_r:rild_ims_socket:s0
-/dev/socket/volte_imsm u:object_r:rild_imsm_socket:s0
-/dev/socket/rild-atci-md2 u:object_r:rild_atci_md2_socket:s0
-/dev/socket/rild-atci u:object_r:rild_atci_socket:s0
-/dev/socket/rild-vsim u:object_r:rild_vsim_socket:s0
-/dev/socket/rild-vsim-md2 u:object_r:rild_vsim_md2_socket:s0
-/dev/socket/rild-ctclient u:object_r:rild_ctclient_socket:s0
-/dev/socket/rild-debug-md2 u:object_r:rild_debug_md2_socket:s0
-/dev/socket/rild-dongle u:object_r:rild-dongle_socket:s0
-/dev/socket/rild-md2 u:object_r:rild_md2_socket:s0
-/dev/socket/rild-mtk-modem-md2 u:object_r:rild_mtk_modem_md2_socket:s0
-/dev/socket/rild-mtk-modem u:object_r:rild_mtk_modem_socket:s0
-/dev/socket/rild-mtk-ut-2-md2 u:object_r:rild_mtk_ut_2_md2_socket:s0
-/dev/socket/rild-mtk-ut-2 u:object_r:rild_mtk_ut_2_socket:s0
-/dev/socket/rild-mtk-ut-md2 u:object_r:rild_mtk_ut_md2_socket:s0
-/dev/socket/rild-mtk-ut u:object_r:rild_mtk_ut_socket:s0
-/dev/socket/rild-oem-md2 u:object_r:rild_oem_md2_socket:s0
-/dev/socket/rild-oem u:object_r:rild_oem_socket:s0
-#/dev/socket/rild u:object_r:rild_socket:s0  -- defined in AOSP
-/dev/socket/rild-via u:object_r:rild_via_socket:s0
-/dev/socket/rild-atci-c2k u:object_r:rild_atci_c2k_socket:s0
-
-# missing from bluetooth rules
-/data/BT_Addr u:object_r:xen0n_mtk_bt_addr_file:s0
-
-# mtkbt
-/system/bin/mtkbt u:object_r:mtkbt_exec:s0
-/dev/socket/bt.int.adp(/.*)? u:object_r:xen0n_mtk_bt_int_adp_socket:s0
-
-# missing from thermal_manager rules
-/data/\.tp\.settings u:object_r:thermal_manager_data_file:s0
-
-# for transition from selinux-disabled builds where things are not properly
-# labeled
-/data/autok_[0-9]*_.* u:object_r:autokd_data_file:s0
-
-# Meizu additions
-#/system/xbin/MPED u:object_r:mped_exec:s0
-#/dev/tspdrv u:object_r:tspdrv_device:s0
-#/system/bin/immvibed u:object_r:immvibed_exec:s0
-#/dev/pipes u:object_r:immvibe_pipe:s0
-#/sys/devices/bus\.1/11010000\.I2C3/i2c-3/3-001e/ps_calibration u:object_r:meizu_ps_calibration_trigger:s0
-/dev/i2c-3 u:object_r:tfa9890_i2c_device:s0
-/dev/LC898212XD u:object_r:LC898212XD_device:s0
-
-/data/mpe_mnl(/.*)? u:object_r:mped_data_file:s0
-# no filetrans_pattern
-#/data/mpe_mnl/mnl2mpe u:object_r:mped_mpe2mnl_socket:s0
-#/data/mpe_mnl/mpe2mnl u:object_r:mped_mnl2mpe_socket:s0
-#/data/mtk_mpe_server u:object_r:mped_server_socket:s0
-
-# xen0n files
-# TODO
-#/system/bin/proj-dev-setup u:object_r:proj_dev_setup_exec:s0
-#/system/bin/openimmvibed   u:object_r:openimmvibed_exec:s0
-#/system/bin/meizupshelper  u:object_r:meizupshelper_exec:s0
-
-#/dev/pipes/immvibecontrol  u:object_r:openimmvibed_control_socket:s0
-#/data/\.libimmvibeclient_force u:object_r:openimmvibed_data_file:s0
+# define raw block partition label
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/proinfo		u:object_r:nvram_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/nvram		u:object_r:nvram_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/nvdata		u:object_r:nvdata_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/frp		u:object_r:frp_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/expdb		u:object_r:expdb_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/misc2		u:object_r:misc2_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/logo		u:object_r:logo_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/para		u:object_r:para_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/tee1		u:object_r:tee_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/tee2		u:object_r:tee_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/seccfg		u:object_r:seccfg_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/secro		u:object_r:secro_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/userdata		u:object_r:userdata_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/cache		u:object_r:cache_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/recovery		u:object_r:recovery_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/protect1		u:object_r:protect1_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/protect2		u:object_r:protect2_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/keystore		u:object_r:keystore_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/oemkeystore	u:object_r:oemkeystore_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/boot	        u:object_r:boot_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/persist           u:object_r:persist_block_device:s0
+/dev/block/platform/mtk-msdc\.0/[0-9]+\.MSDC0/by-name/system            u:object_r:system_block_device:s0
