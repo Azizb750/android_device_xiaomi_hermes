@@ -1,18 +1,18 @@
-From 93c1518dc41ef2ffb8b1a87340c37ad0b82c544d Mon Sep 17 00:00:00 2001
+From ecc002582a74a6e82e3b03434d76dcaee527b114 Mon Sep 17 00:00:00 2001
 From: Wang Xuerui <idontknw.wang@gmail.com>
-Date: Tue, 29 Sep 2015 13:16:33 +0800
+Date: Tue, 10 Jul 2018 12:12:18 +0200
 Subject: [PATCH] healthd: correctly report battery voltage on MTK kernels
 
-Change-Id: I0d183d028ec28a41d0c87f2e496863e5991013d2
+Change-Id: Ic9fffd709492b04c0187cbbd2d70cb4f32e574cc
 ---
  healthd/BatteryMonitor.cpp | 4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/healthd/BatteryMonitor.cpp b/healthd/BatteryMonitor.cpp
-index b0e9a4d541..523fb5a176 100644
+index d2088ee..947e83e 100644
 --- a/healthd/BatteryMonitor.cpp
 +++ b/healthd/BatteryMonitor.cpp
-@@ -193,7 +193,11 @@ bool BatteryMonitor::update(void) {
+@@ -228,7 +228,11 @@ bool BatteryMonitor::update(void) {
      props.batteryLevel = mBatteryFixedCapacity ?
          mBatteryFixedCapacity :
          getIntField(mHealthdConfig->batteryCapacityPath);
@@ -22,5 +22,8 @@ index b0e9a4d541..523fb5a176 100644
 +    props.batteryVoltage = getIntField(mHealthdConfig->batteryVoltagePath);
 +#endif
  
-     props.batteryTemperature = mBatteryFixedTemperature ?
-         mBatteryFixedTemperature :
+     if (!mHealthdConfig->batteryCurrentNowPath.isEmpty())
+         props.batteryCurrent = getIntField(mHealthdConfig->batteryCurrentNowPath) / 1000;
+-- 
+2.7.4
+

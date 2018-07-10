@@ -556,7 +556,6 @@ public:
     static const char WHITE_BALANCE_CLOUDY_DAYLIGHT[];
     static const char WHITE_BALANCE_TWILIGHT[];
     static const char WHITE_BALANCE_SHADE[];
-    static const char WHITE_BALANCE_MANUAL_CCT[];
 
     // Values for effect settings.
     static const char EFFECT_NONE[];
@@ -679,8 +678,6 @@ public:
     // To stop continuous focus, applications should change the focus mode to
     // other modes.
     static const char FOCUS_MODE_CONTINUOUS_PICTURE[];
-
-    static const char FOCUS_MODE_MANUAL_POSITION[];
 
     // Values for light special effects
     // Low-light enhancement mode

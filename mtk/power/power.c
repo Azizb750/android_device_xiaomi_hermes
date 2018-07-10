@@ -15,6 +15,7 @@
  */
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -29,7 +30,7 @@
 
 #define POWER_HINT_POWER_SAVING 0x00000101
 #define POWER_HINT_PERFORMANCE_BOOST 0x00000102
-#define POWER_HINT_BALANCE 0x00000103
+#define POWER_HINT_BALANCE  0x00000103
 
 static void power_init(struct power_module *module) {
     ALOGI("Mediatek power hal init");
@@ -38,8 +39,7 @@ static void power_init(struct power_module *module) {
 static void power_set_interactive(struct power_module *module, int on) {
 }
 
-static void power_fwrite(const char *path, char *s)
-{
+static void power_fwrite(const char *path, char *s) {
     char buf[64];
     int len;
     int fd = open(path, O_WRONLY);
@@ -61,11 +61,9 @@ static void power_fwrite(const char *path, char *s)
 
 static void power_hint(struct power_module *module, power_hint_t hint,
                        void *data) {
-    int32_t dataint = -1;
     switch (hint) {
         case POWER_HINT_LOW_POWER:
-            dataint = *(int32_t *)data;
-            if (dataint)
+            if (data)
                 power_fwrite(MT_RUSH_BOOST_PATH, "0");
             else
                 power_fwrite(MT_RUSH_BOOST_PATH, "1");
@@ -74,10 +72,12 @@ static void power_hint(struct power_module *module, power_hint_t hint,
         case POWER_HINT_VSYNC:
         case POWER_HINT_INTERACTION:
         case POWER_HINT_CPU_BOOST:
-        case POWER_HINT_LAUNCH_BOOST:
+        case POWER_HINT_LAUNCH:
         case POWER_HINT_SET_PROFILE:
         case POWER_HINT_VIDEO_ENCODE:
         case POWER_HINT_VIDEO_DECODE:
+        case POWER_HINT_SUSTAINED_PERFORMANCE:
+        case POWER_HINT_VR_MODE:
         break;
     default:
         break;

@@ -3,6 +3,7 @@
 ro.telephony.ril_class=MediaTekRIL
 ro.telephony.ril.config=fakeiccid
 ro.mtk_flight_mode_power_off_md=1
+ro.telephony.default_network=9
 ro.telephony.sim.count=2
 ro.mtk_rild_read_imsi=1
 ro.mtk_world_phone=1
@@ -41,6 +42,8 @@ persist.audio.dirac.speaker=true
 # Camera
 camera.disable_zsl_mode=1
 ro.camera.sound.forced=0
+media.stagefright.legacyencoder=true
+media.stagefright.less-secure=true
 
 # FM Radio
 fmradio.driver.enable=1

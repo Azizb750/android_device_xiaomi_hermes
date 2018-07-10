@@ -45,10 +45,7 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 BOARD_USES_MTK_HARDWARE := true
 
 # Display
-#TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 BOARD_EGL_CFG := $(LOCAL_PATH)/mtk/egl.cfg
-BOARD_EGL_WORKAROUND_BUG_10194508 := true
-COMMON_GLOBAL_CFLAGS += -DDISABLE_ASHMEM_TRACKING
 
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
@@ -67,12 +64,11 @@ TARGET_PROVIDES_LIBLIGHT := true
 
 # Camera
 TARGET_SPECIFIC_CAMERA_PARAMETER_LIBRARY := libcamera_parameters_mtk
+TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
+TARGET_HAS_LEGACY_CAMERA_HAL1 := true
 
 # Device specific props
 TARGET_SYSTEM_PROP := $(LOCAL_PATH)/system.prop
-
-# Shim libs
-TARGET_LDPRELOAD += libshim_audio.so:libshim_xlog.so
 
 # Wi-Fi
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_mt66xx
@@ -94,7 +90,7 @@ BOARD_SUPPRESS_EMMC_WIPE := true
 BOARD_RECOVERY_SWIPE := true
 
 # Sepolicy
-BOARD_SEPOLICY_DIRS += $(LOCAL_PATH)/sepolicy
+BOARD_SEPOLICY_DIRS += device/xiaomi/hermes/sepolicy
 POLICYVERS := 28
 
 # Build kernel without kernel sources

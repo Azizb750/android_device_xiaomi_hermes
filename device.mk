@@ -26,7 +26,11 @@ PRODUCT_PACKAGES += Snap
 
 # Shim symbols
 PRODUCT_PACKAGES += \
-    libshim_audio \
+    libshim_c \
+    libshim_media \
+    libshim_stagefright \
+    libshim_ui \
+    libshim_wvm \
     libshim_xlog
 
 # Power HAL
@@ -36,9 +40,7 @@ PRODUCT_PACKAGES += power.mt6795
 PRODUCT_PACKAGES += \
     hostapd \
     lib_driver_cmd_mt66xx \
-    libwifi-hal-mt66xx \
     libwpa_client \
-    wifi_hal \
     wpa_supplicant
 
 # Graphic

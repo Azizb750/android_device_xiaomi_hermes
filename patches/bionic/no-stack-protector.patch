@@ -1,0 +1,27 @@
+From ebd10f9b783bb81a46e559e8c16f917f53d33ce9 Mon Sep 17 00:00:00 2001
+From: DeckerSU <support@decker.su>
+Date: Tue, 10 Jul 2018 16:22:57 +0200
+Subject: [PATCH] libc: Disable stack protector for now
+
+Disable it to fix libcam.halsensor crash
+
+Change-Id: I7cdc493a0cdc1fadca1fe7096e4556ee33f4a2a7
+---
+ libc/Android.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libc/Android.mk b/libc/Android.mk
+index 94f7ce6..84ee611 100644
+--- a/libc/Android.mk
++++ b/libc/Android.mk
+@@ -607,6 +607,7 @@ libc_openbsd_src_files_32 += \
+ libc_common_cflags := \
+     -D_LIBC=1 \
+     -Wall -Wextra -Wunused \
++    -fno-stack-protector
+ 
+ use_clang := $(USE_CLANG_PLATFORM_BUILD)
+ 
+-- 
+2.7.4
+

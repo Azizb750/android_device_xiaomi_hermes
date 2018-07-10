@@ -31,7 +31,6 @@ import android.provider.Settings;
 import android.provider.Settings.Global;
 
 import android.telephony.TelephonyManager;
-import android.telephony.Rlog;
 
 import com.android.internal.telephony.MtkEccList;
 
@@ -42,22 +41,29 @@ import com.android.internal.telephony.MtkEccList;
  * {@hide}
  */
 public class MediaTekRIL extends RIL implements CommandsInterface {
+    static final String LOG_TAG = "MediaTekRIL";
 
-    private static final int RIL_UNSOL_RESPONSE_PS_NETWORK_STATE_CHANGED = 3015;
-    private static final int RIL_UNSOL_RESPONSE_REGISTRATION_SUSPENDED = 3024;
-    private static final int RIL_UNSOL_INCOMING_CALL_INDICATION = 3042;
-    private static final int RIL_UNSOL_CALL_INFO_INDICATION = 3049;
-    private static final int RIL_UNSOL_SET_ATTACH_APN = 3073;
+    static final int REFRESH_SESSION_RESET = 6; /* Session reset */
 
-    private static final int RIL_REQUEST_MODEM_POWEROFF = 2010;
-    private static final int RIL_REQUEST_MODEM_POWERON = 2028;
-    private static final int RIL_REQUEST_RESUME_REGISTRATION = 2065;
-    private static final int RIL_REQUEST_SET_CALL_INDICATION = 2086;
-    private static final int RIL_REQUEST_EMERGENCY_DIAL = 2087;
-    private static final int RIL_REQUEST_SET_ECC_SERVICE_CATEGORY = 2088;
-    private static final int RIL_REQUEST_SET_ECC_LIST = 2089;
+    static final int RIL_REQUEST_VENDOR_BASE = 2000;
+    static final int RIL_REQUEST_MODEM_POWEROFF = (RIL_REQUEST_VENDOR_BASE + 10);
+    static final int RIL_REQUEST_MODEM_POWERON = (RIL_REQUEST_VENDOR_BASE + 28);
+    static final int RIL_REQUEST_RESUME_REGISTRATION  = (RIL_REQUEST_VENDOR_BASE + 65);
+    static final int RIL_REQUEST_SET_CALL_INDICATION = (RIL_REQUEST_VENDOR_BASE + 86);
+    static final int RIL_REQUEST_EMERGENCY_DIAL = (RIL_REQUEST_VENDOR_BASE + 87);
+    static final int RIL_REQUEST_SET_ECC_SERVICE_CATEGORY = (RIL_REQUEST_VENDOR_BASE + 88);
+    static final int RIL_REQUEST_SET_ECC_LIST = (RIL_REQUEST_VENDOR_BASE + 89);
+    static final int RIL_REQUEST_GENERAL_SIM_AUTH = (RIL_REQUEST_VENDOR_BASE + 90);
+    static final int RIL_REQUEST_QUERY_AVAILABLE_NETWORK_WITH_ACT = (RIL_REQUEST_VENDOR_BASE + 95);
+    static final int RIL_REQUEST_SWITCH_CARD_TYPE = (RIL_REQUEST_VENDOR_BASE + 131);
 
-    private static final int REFRESH_SESSION_RESET = 6;      /* Session reset */
+    static final int RIL_UNSOL_VENDOR_BASE = 3000;
+    static final int RIL_UNSOL_RESPONSE_PS_NETWORK_STATE_CHANGED = (RIL_UNSOL_VENDOR_BASE + 15);
+    static final int RIL_UNSOL_RESPONSE_REGISTRATION_SUSPENDED = (RIL_UNSOL_VENDOR_BASE + 24);
+    static final int RIL_UNSOL_INCOMING_CALL_INDICATION = (RIL_UNSOL_VENDOR_BASE + 42);
+    static final int RIL_UNSOL_CALL_INFO_INDICATION = (RIL_UNSOL_VENDOR_BASE + 49);
+    static final int RIL_UNSOL_MD_STATE_CHANGE = (RIL_UNSOL_VENDOR_BASE + 53);
+    static final int RIL_UNSOL_SET_ATTACH_APN = (RIL_UNSOL_VENDOR_BASE + 73);
 
     private int[] dataCallCids = { -1, -1, -1, -1, -1 };
 
@@ -92,10 +98,9 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
         }
     }
 
-
     @Override
     protected void
-    processUnsolicited (Parcel p) {
+    processUnsolicited (Parcel p, int type) {
         Object ret;
         int dataPosition = p.dataPosition(); // save off position within the Parcel
         int response = p.readInt();
@@ -104,6 +109,7 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
             case RIL_UNSOL_RESPONSE_REGISTRATION_SUSPENDED: ret = responseRegSuspended(p); break;
             case RIL_UNSOL_INCOMING_CALL_INDICATION: ret = responseIncomingCallIndication(p); break;
             case RIL_UNSOL_CALL_INFO_INDICATION: ret = responseCallProgress(p); break;
+            case RIL_UNSOL_MD_STATE_CHANGE: ret = responseInts(p); break;
             case RIL_UNSOL_SET_ATTACH_APN: ret = responseSetAttachApn(p); break;
             case RIL_UNSOL_ON_USSD: ret =  responseStrings(p); break;
             case RIL_UNSOL_RESPONSE_PS_NETWORK_STATE_CHANGED: ret = responseInts(p); break;
@@ -111,7 +117,7 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
                 // Rewind the Parcel
                 p.setDataPosition(dataPosition);
                 // Forward responses that we are not overriding to the super class
-                super.processUnsolicited(p);
+                super.processUnsolicited(p, type);
                 return;
         }
         switch(response) {
@@ -272,8 +278,8 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
 
     @Override
     public void
-    setupDataCall(String radioTechnology, String profile, String apn,
-            String user, String password, String authType, String protocol,
+    setupDataCall(int radioTechnology, int profile, String apn,
+            String user, String password, int authType, String protocol,
             Message result) {
         int interfaceId=0;
         RILRequest rr
@@ -281,12 +287,12 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
 
         rr.mParcel.writeInt(8); //bumped by one
 
-        rr.mParcel.writeString(radioTechnology);
-        rr.mParcel.writeString(profile);
+        rr.mParcel.writeString(Integer.toString(radioTechnology));
+        rr.mParcel.writeString(Integer.toString(profile));
         rr.mParcel.writeString(apn);
         rr.mParcel.writeString(user);
         rr.mParcel.writeString(password);
-        rr.mParcel.writeString(authType);
+        rr.mParcel.writeString(Integer.toString(authType));
         rr.mParcel.writeString(protocol);
 
         /* Find the first available interfaceId */
@@ -393,7 +399,7 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
     // Solicited request handling
     @Override
     protected RILRequest
-    processSolicited (Parcel p) {
+    processSolicited (Parcel p, int type) {
         int serial, error;
         int dataPosition = p.dataPosition(); // save off position within the Parcel
         serial = p.readInt();
@@ -434,7 +440,7 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
             p.setDataPosition(dataPosition);
 
             // Forward responses that we are not overriding to the super class
-            return super.processSolicited(p);
+            return super.processSolicited(p, type);
         }
 
 
@@ -507,10 +513,9 @@ public class MediaTekRIL extends RIL implements CommandsInterface {
     iccIOForApp (int command, int fileid, String path, int p1, int p2, int p3,
             String data, String pin2, String aid, Message result) {
         if (command == 0xc0 && p3 == 0) {
-            Rlog.i("MediaTekRIL", "Override the size for the COMMAND_GET_RESPONSE 0 => 15");
+            riljLog("Override the size for the COMMAND_GET_RESPONSE 0 => 15");
             p3 = 15;
         }
         super.iccIOForApp(command, fileid, path, p1, p2, p3, data, pin2, aid, result);
     }
-
 }
