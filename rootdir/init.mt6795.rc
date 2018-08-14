@@ -27,7 +27,7 @@ on init
 
     # Kernel logs
     chown root system /dev/kmsg
-    chmod 0660 /dev/kmsg
+    chmod 0666 /dev/kmsg
 
     # OTG
     mkdir /mnt/media_rw/usbotg 0700 media_rw media_rw
@@ -38,7 +38,7 @@ on init
 
     # RIL
     chown root system /proc/lk_env
-    chmod 0660 /proc/lk_env
+    chmod 0666 /proc/lk_env
 
 on fs
     mount_all /fstab.mt6795
@@ -60,24 +60,24 @@ on post-fs
     symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/proinfo /dev/block/platform/mtk-msdc.0/by-name/proinfo
 
     # Wi-Fi
-    chmod 0660 /dev/wmtWifi
+    chmod 0666 /dev/wmtWifi
     chown system system /dev/wmtWifi
 
-    chmod 0660 /dev/stpwmt
+    chmod 0666 /dev/stpwmt
     chown system system /dev/stpwmt
 
-    chmod 0660 /dev/wmtdetect
+    chmod 0666 /dev/wmtdetect
     chown system system /dev/wmtdetect
 
     # BT
-    chmod 0660 /dev/stpbt
+    chmod 0666 /dev/stpbt
     chown radio bluetooth /dev/stpbt
 
     # GPS
-    chmod 0660 /dev/gps
+    chmod 0666 /dev/gps
     chown system gps /dev/gps
 
-    chmod 0660 /dev/stpgps
+    chmod 0666 /dev/stpgps
     chown gps gps /dev/stpgps
 
     # Boot info
@@ -115,45 +115,45 @@ on post-fs-data
     setrlimit 8 -1 -1
 
     # Sensors
-    chmod 0660 /dev/hwmsensor
-    chmod 0660 /dev/gyroscope
-    chmod 0660 /dev/gsensor
-    chmod 0660 /dev/als_ps
+    chmod 0666 /dev/hwmsensor
+    chmod 0666 /dev/gyroscope
+    chmod 0666 /dev/gsensor
+    chmod 0666 /dev/als_ps
     chown system system /dev/gyroscope
     chown system system /dev/hwmsensor
     chown system system /dev/gsensor
     chown system system /dev/als_ps
 
-    chmod 0660 /sys/class/misc/m_acc_misc/accenablenodata
-    chmod 0660 /sys/class/misc/m_acc_misc/accactive
-    chmod 0660 /sys/class/misc/m_acc_misc/accdelay
-    chmod 0660 /sys/class/misc/m_acc_misc/accbatch
-    chmod 0660 /sys/class/misc/m_acc_misc/accflush
+    chmod 0666 /sys/class/misc/m_acc_misc/accenablenodata
+    chmod 0666 /sys/class/misc/m_acc_misc/accactive
+    chmod 0666 /sys/class/misc/m_acc_misc/accdelay
+    chmod 0666 /sys/class/misc/m_acc_misc/accbatch
+    chmod 0666 /sys/class/misc/m_acc_misc/accflush
     chown system system /sys/class/misc/m_acc_misc/accenablenodata
     chown system system /sys/class/misc/m_acc_misc/accactive
     chown system system /sys/class/misc/m_acc_misc/accdelay
     chown system system /sys/class/misc/m_acc_misc/accbatch
     chown system system /sys/class/misc/m_acc_misc/accflush
 
-    chmod 0660 /sys/class/misc/m_gyro_misc/gyroenablenodata
-    chmod 0660 /sys/class/misc/m_gyro_misc/gyroactive
-    chmod 0660 /sys/class/misc/m_gyro_misc/gyrodelay
-    chmod 0660 /sys/class/misc/m_gyro_misc/gyrobatch
-    chmod 0660 /sys/class/misc/m_gyro_misc/gyroflush
+    chmod 0666 /sys/class/misc/m_gyro_misc/gyroenablenodata
+    chmod 0666 /sys/class/misc/m_gyro_misc/gyroactive
+    chmod 0666 /sys/class/misc/m_gyro_misc/gyrodelay
+    chmod 0666 /sys/class/misc/m_gyro_misc/gyrobatch
+    chmod 0666 /sys/class/misc/m_gyro_misc/gyroflush
     chown system system /sys/class/misc/m_gyro_misc/gyroenablenodata
     chown system system /sys/class/misc/m_gyro_misc/gyroactive
     chown system system /sys/class/misc/m_gyro_misc/gyrodelay
     chown system system /sys/class/misc/m_gyro_misc/gyrobatch
     chown system system /sys/class/misc/m_gyro_misc/gyroflush
 
-    chmod 0660 /sys/class/misc/m_mag_misc/magactive
-    chmod 0660 /sys/class/misc/m_mag_misc/magdelay
-    chmod 0660 /sys/class/misc/m_mag_misc/magbatch
-    chmod 0660 /sys/class/misc/m_mag_misc/magflush
-    chmod 0660 /sys/class/misc/m_mag_misc/magoactive
-    chmod 0660 /sys/class/misc/m_mag_misc/magodelay
-    chmod 0660 /sys/class/misc/m_mag_misc/magobatch
-    chmod 0660 /sys/class/misc/m_mag_misc/magoflush
+    chmod 0666 /sys/class/misc/m_mag_misc/magactive
+    chmod 0666 /sys/class/misc/m_mag_misc/magdelay
+    chmod 0666 /sys/class/misc/m_mag_misc/magbatch
+    chmod 0666 /sys/class/misc/m_mag_misc/magflush
+    chmod 0666 /sys/class/misc/m_mag_misc/magoactive
+    chmod 0666 /sys/class/misc/m_mag_misc/magodelay
+    chmod 0666 /sys/class/misc/m_mag_misc/magobatch
+    chmod 0666 /sys/class/misc/m_mag_misc/magoflush
     chown system system /sys/class/misc/m_mag_misc/magactive
     chown system system /sys/class/misc/m_mag_misc/magdelay
     chown system system /sys/class/misc/m_mag_misc/magbatch
@@ -163,11 +163,11 @@ on post-fs-data
     chown system system /sys/class/misc/m_mag_misc/magobatch
     chown system system /sys/class/misc/m_mag_misc/magoflush
 
-    chmod 0660 /sys/class/misc/m_step_c_misc/step_cenablenodata
-    chmod 0660 /sys/class/misc/m_step_c_misc/step_cactive
-    chmod 0660 /sys/class/misc/m_step_c_misc/step_cdelay
-    chmod 0660 /sys/class/misc/m_step_c_misc/step_cbatch
-    chmod 0660 /sys/class/misc/m_step_c_misc/step_cflush
+    chmod 0666 /sys/class/misc/m_step_c_misc/step_cenablenodata
+    chmod 0666 /sys/class/misc/m_step_c_misc/step_cactive
+    chmod 0666 /sys/class/misc/m_step_c_misc/step_cdelay
+    chmod 0666 /sys/class/misc/m_step_c_misc/step_cbatch
+    chmod 0666 /sys/class/misc/m_step_c_misc/step_cflush
     chown system system /sys/class/misc/m_step_c_misc/step_cenablenodata
     chown system system /sys/class/misc/m_step_c_misc/step_cactive
     chown system system /sys/class/misc/m_step_c_misc/step_cdelay
@@ -175,18 +175,18 @@ on post-fs-data
     chown system system /sys/class/misc/m_step_c_misc/step_cflush
 
     # VideoCodec
-    chmod 0660 /dev/Vcodec
+    chmod 0666 /dev/Vcodec
     chown system media /dev/Vcodec
 
     chmod 0664 /proc/mcdi/sodi_en
     chown media /proc/mcdi/sodi_en
 
     # MJC
-    chmod 0660 /dev/MJC
+    chmod 0666 /dev/MJC
     chown system media /dev/MJC
 
     # Graphic
-    chmod 0660 /dev/mtk_disp_mgr
+    chmod 0666 /dev/mtk_disp_mgr
     chown system graphics /dev/mtk_disp_mgr
 
     # Autok
@@ -202,7 +202,7 @@ on post-fs-data
     chown root system /sys/autok/stage2/3
 
     # FM Radio
-    chmod 0660 /dev/fm
+    chmod 0666 /dev/fm
     chown system media /dev/fm
 
     # Device info /proc interface
@@ -210,17 +210,17 @@ on post-fs-data
     chown root system /dev/devmap
 
     # BT relayer
-    chmod 0660 /dev/ttyGS2
+    chmod 0666 /dev/ttyGS2
     chown bluetooth radio /dev/ttyGS2
 
     # Camera
-    chmod 0660 /dev/camera-fdvt
-    chmod 0660 /dev/camera-isp
-    chmod 0660 /dev/kd_camera_flashlight
-    chmod 0660 /dev/kd_camera_hw
-    chmod 0660 /dev/kd_camera_hw_bus2
-    chmod 0660 /dev/CAM_CAL_DRV
-    chmod 0660 /dev/DW9761BAF
+    chmod 0666 /dev/camera-fdvt
+    chmod 0666 /dev/camera-isp
+    chmod 0666 /dev/kd_camera_flashlight
+    chmod 0666 /dev/kd_camera_hw
+    chmod 0666 /dev/kd_camera_hw_bus2
+    chmod 0666 /dev/CAM_CAL_DRV
+    chmod 0666 /dev/DW9761BAF
 
     chown system camera /dev/camera-fdvt
     chown system camera /dev/camera-isp
@@ -231,14 +231,14 @@ on post-fs-data
     chown system camera /dev/DW9761BAF
 
     # SMI
-    chmod 0660 /dev/MTK_SMI
+    chmod 0666 /dev/MTK_SMI
     chown system media /dev/MTK_SMI
 
-    chmod 0660 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
+    chmod 0666 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
     chown system media /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
 
     # MTK_SCHED
-    chmod 0660 /dev/mtk_sched
+    chmod 0666 /dev/mtk_sched
     chown system media /dev/mtk_sched
 
     # AGPS
@@ -246,7 +246,7 @@ on post-fs-data
     restorecon_recursive /data/misc/gps
 
     # BT/FM/GPS
-    chmod 0660 /dev/ttyMT2
+    chmod 0666 /dev/ttyMT2
     chown system system /dev/ttyMT2
 
     # Wi-Fi
@@ -258,7 +258,7 @@ on post-fs-data
     mkdir /data/.tp/ 0775 system system
 
     # Consumerir
-    chmod 0660 /dev/consumerir
+    chmod 0666 /dev/consumerir
     chown system system /dev/consumerir
 
     # Atmel calibration
@@ -283,7 +283,7 @@ on post-fs-data
 
     # Ignore permission check
     write /data/ccci_cfg/md_new_ver.1 "flag"
-    chmod 0660 /data/ccci_cfg/md_new_ver.1
+    chmod 0666 /data/ccci_cfg/md_new_ver.1
 
     setprop vold.post_fs_data_done 1
 
@@ -330,23 +330,23 @@ on boot
 
     # Perfservice
     chown system system /sys/devices/system/cpu/cpufreq/hotplug/cpu_num_base
-    chmod 0660 /sys/devices/system/cpu/cpufreq/hotplug/cpu_num_base
+    chmod 0666 /sys/devices/system/cpu/cpufreq/hotplug/cpu_num_base
     chown system system /proc/hps/num_base_perf_serv
-    chmod 0660 /proc/hps/num_base_perf_serv
+    chmod 0666 /proc/hps/num_base_perf_serv
     chown system system /proc/hps/num_limit_power_serv
-    chmod 0660 /proc/hps/num_limit_power_serv
+    chmod 0666 /proc/hps/num_limit_power_serv
     chown system system /proc/hps/rush_boost_enabled
-    chmod 0660 /proc/hps/rush_boost_enabled
+    chmod 0666 /proc/hps/rush_boost_enabled
     chown system system /proc/cpufreq/cpufreq_limited_by_hevc
-    chmod 0660 /proc/cpufreq/cpufreq_limited_by_hevc
+    chmod 0666 /proc/cpufreq/cpufreq_limited_by_hevc
     chown system system /proc/cpufreq/cpufreq_limited_max_freq_by_user
-    chmod 0660 /proc/cpufreq/cpufreq_limited_max_freq_by_user
+    chmod 0666 /proc/cpufreq/cpufreq_limited_max_freq_by_user
     chown system system /d/ged/hal/total_gpu_freq_level_count
-    chmod 0660 /d/ged/hal/total_gpu_freq_level_count
+    chmod 0666 /d/ged/hal/total_gpu_freq_level_count
     chown system system /d/ged/hal/custom_boost_gpu_freq
-    chmod 0660 /d/ged/hal/custom_boost_gpu_freq
+    chmod 0666 /d/ged/hal/custom_boost_gpu_freq
     chown system system /d/ged/hal/custom_upbound_gpu_freq
-    chmod 0660 /d/ged/hal/custom_upbound_gpu_freq
+    chmod 0666 /d/ged/hal/custom_upbound_gpu_freq
 
     # WMT loader
     chown shell system /proc/driver/wmt_aee
@@ -378,7 +378,7 @@ service p2p_supplicant /system/bin/wpa_supplicant \
     -I/system/etc/wifi/p2p_supplicant_overlay.conf \
     -O/data/misc/wifi/sockets -g@android:wpa_wlan0
     class main
-    socket wpa_wlan0 dgram 660 wifi wifi
+    socket wpa_wlan0 dgram 666 wifi wifi
     disabled
     oneshot
 
@@ -387,7 +387,7 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     -I/system/etc/wifi/wpa_supplicant_overlay.conf \
     -O/data/misc/wifi/sockets -g@android:wpa_wlan0
     class main
-    socket wpa_wlan0 dgram 660 wifi wifi
+    socket wpa_wlan0 dgram 666 wifi wifi
     disabled
     oneshot
 
@@ -436,21 +436,21 @@ service nvram_daemon /system/bin/nvram_daemon
 
 service ril-daemon-mtk /system/bin/mtkrild
     class core
-    socket rild stream 660 root radio
-    socket rild2 stream 660 root radio
-    socket rild3 stream 660 root radio
-    socket rild4 stream 660 root radio
-    socket rild-ims stream 660 root radio
-    socket rild-debug stream 660 radio system
-    socket rild-oem stream 660 radio system
-    socket rild-mtk-ut stream 660 radio net_bt
-    socket rild-mtk-ut-2 stream 660 radio net_bt
-    socket rild-mtk-modem stream 660 radio system
-    socket rild-atci stream 660 root radio
-    socket sap_uim_socket1 stream 660 bluetooth bluetooth
-    socket sap_uim_socket2 stream 660 bluetooth bluetooth
-    socket sap_uim_socket3 stream 660 bluetooth bluetooth
-    socket sap_uim_socket4 stream 660 bluetooth bluetooth
+    socket rild stream 666 root radio
+    socket rild2 stream 666 root radio
+    socket rild3 stream 666 root radio
+    socket rild4 stream 666 root radio
+    socket rild-ims stream 666 root radio
+    socket rild-debug stream 666 radio system
+    socket rild-oem stream 666 radio system
+    socket rild-mtk-ut stream 666 radio net_bt
+    socket rild-mtk-ut-2 stream 666 radio net_bt
+    socket rild-mtk-modem stream 666 radio system
+    socket rild-atci stream 666 root radio
+    socket sap_uim_socket1 stream 666 bluetooth bluetooth
+    socket sap_uim_socket2 stream 666 bluetooth bluetooth
+    socket sap_uim_socket3 stream 666 bluetooth bluetooth
+    socket sap_uim_socket4 stream 666 bluetooth bluetooth
     user root
     group radio cache inet misc audio sdcard_r sdcard_rw log system
     disabled
@@ -510,9 +510,9 @@ service bmi160d /system/bin/bmi160d
 # GPS
 service agpsd /system/bin/mtk_agpsd
     class main
-    socket agpsd stream 660 gps system
-    socket agpsd2 stream 660 system inet
-    socket agpsd3 stream 660 system inet
+    socket agpsd stream 666 gps system
+    socket agpsd2 stream 666 system inet
+    socket agpsd3 stream 666 system inet
     user gps
     group gps inet sdcard_r sdcard_rw misc radio
 
@@ -525,7 +525,7 @@ service mnld /system/xbin/mnld
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system
-    socket mnld stream 660 gps system
+    socket mnld stream 666 gps system
 
 # Properties
 on property:vold.decrypt=trigger_reset_main
