@@ -1,0 +1,42 @@
+From 233e18186720e17fde102c632badebb27ad4e645 Mon Sep 17 00:00:00 2001
+From: Dinolek <dinolek@o2.pl>
+Date: Tue, 10 Jul 2018 16:25:59 +0200
+Subject: [PATCH] minijail: Disable it
+
+Prebuilt kernel doesn't support seccomp filtering
+
+Change-Id: I135017129fbe84a98b927a6e5973af82d23a5af5
+---
+ services/mediacodec/main_codecservice.cpp         | 2 +-
+ services/mediaextractor/main_extractorservice.cpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/services/mediacodec/main_codecservice.cpp b/services/mediacodec/main_codecservice.cpp
+index a2868c1..dc9f70e 100644
+--- a/services/mediacodec/main_codecservice.cpp
++++ b/services/mediacodec/main_codecservice.cpp
+@@ -36,7 +36,7 @@ int main(int argc __unused, char** argv)
+ {
+     ALOGI("@@@ mediacodecservice starting");
+     signal(SIGPIPE, SIG_IGN);
+-    MiniJail();
++    //MiniJail();
+ 
+     strcpy(argv[0], "media.codec");
+     sp<ProcessState> proc(ProcessState::self());
+diff --git a/services/mediaextractor/main_extractorservice.cpp b/services/mediaextractor/main_extractorservice.cpp
+index 245489e..736379e 100644
+--- a/services/mediaextractor/main_extractorservice.cpp
++++ b/services/mediaextractor/main_extractorservice.cpp
+@@ -42,7 +42,7 @@ int main(int argc __unused, char** argv)
+         20 /* upper limit as percentage of physical RAM */);
+ 
+     signal(SIGPIPE, SIG_IGN);
+-    MiniJail();
++    //MiniJail();
+ 
+     InitializeIcuOrDie();
+ 
+-- 
+2.7.4
+
