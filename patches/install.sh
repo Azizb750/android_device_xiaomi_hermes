@@ -1,6 +1,6 @@
 #!/bin/sh
 rootdirectory="$PWD"
-dirs="bionic frameworks/av system/core system/sepolicy"
+dirs="bionic frameworks/av system/core system/sepolicy system/"
 
 for dir in $dirs ; do
 	cd $rootdirectory
