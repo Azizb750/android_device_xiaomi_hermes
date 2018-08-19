@@ -49,7 +49,9 @@ PRODUCT_PACKAGES += \
     libion
 
 # GPS
-PRODUCT_PACKAGES += libcurl
+PRODUCT_PACKAGES += \
+	gps.mt6795 \
+	libcurl
 
 # DRM
 PRODUCT_PACKAGES += libmockdrmcryptoplugin
