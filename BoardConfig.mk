@@ -59,6 +59,10 @@ YELLOW_LED_PATH := /sys/class/leds/yellow/brightness
 BOARD_HAVE_BLUETOOTH := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
 
+# GPS
+BOARD_GPS_LIBRARIES := true
+BOARD_MEDIATEK_USES_GPS := true
+
 # RIL
 BOARD_PROVIDES_RILD := true
 BOARD_RIL_CLASS := ../../../$(LOCAL_PATH)/mtk/ril
