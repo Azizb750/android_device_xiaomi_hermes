@@ -98,7 +98,7 @@ on post-fs-data
 
     # GPS
     mkdir /data/gps_mnl 0771 gps system
-    mkdir /data/misc/gps 0770 gps gps
+    mkdir /data/misc/gps 0770 gps system
     chown gps gps /sys/class/gpsdrv/gps/pwrctl
     chown gps gps /sys/class/gpsdrv/gps/suspend
     chown gps gps /sys/class/gpsdrv/gps/state
@@ -527,9 +527,9 @@ service bmi160d /system/bin/bmi160d
 # GPS
 service agpsd /system/bin/mtk_agpsd
     class main
-    socket agpsd stream 666 gps system
-    socket agpsd2 stream 666 system inet
-    socket agpsd3 stream 666 system inet
+    socket agpsd stream 660 gps system
+    socket agpsd2 stream 660 system inet
+    socket agpsd3 stream 660 system inet
     user gps
     group gps inet sdcard_r sdcard_rw misc radio
 
@@ -542,7 +542,18 @@ service mnld /system/xbin/mnld
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system
-    socket mnld stream 666 gps system
+    socket mnld stream 660 gps system 
+   
+#service slpd /system/bin/slpd
+#    class main
+#    user gps
+#    group gps inet
+
+#service BGW /system/xbin/BGW
+#	user system
+#	group gps system radio
+#	class main
+
 
 # Properties
 on property:vold.decrypt=trigger_reset_main
