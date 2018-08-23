@@ -47,9 +47,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libGLES_android \
     libion
-
 # GPS
-PRODUCT_PACKAGES += libcurl
+PRODUCT_PACKAGES += \
+    gps.mt6795 \
+    libcurl \
+    YGPS
 
 # DRM
 PRODUCT_PACKAGES += libmockdrmcryptoplugin
