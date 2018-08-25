@@ -1,0 +1,65 @@
+From 2d91cf68d09d63905f1b048f78a933a7e00c1bef Mon Sep 17 00:00:00 2001
+From: Dinolek <dinolek@o2.pl>
+Date: Tue, 10 Jul 2018 17:30:15 +0200
+Subject: [PATCH] camera: Temp changes
+
+Change-Id: I4a1366d3e1ed8a0f5224d5ff694e3ee29f1769e7
+---
+ camera/cameraserver/cameraserver.rc | 2 +-
+ media/libstagefright/ACodec.cpp     | 9 +++++++++
+ media/mediaserver/mediaserver.rc    | 4 ++--
+ 3 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/camera/cameraserver/cameraserver.rc b/camera/cameraserver/cameraserver.rc
+index fea5a1d..b51dbc8 100644
+--- a/camera/cameraserver/cameraserver.rc
++++ b/camera/cameraserver/cameraserver.rc
+@@ -1,6 +1,6 @@
+ service cameraserver /system/bin/cameraserver
+     class main
+     user cameraserver
+-    group audio camera input drmrpc
++    group audio camera input drmrpc media system
+     ioprio rt 4
+     writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
+diff --git a/media/libstagefright/ACodec.cpp b/media/libstagefright/ACodec.cpp
+index a11494d..a4fdbfc 100644
+--- a/media/libstagefright/ACodec.cpp
++++ b/media/libstagefright/ACodec.cpp
+@@ -1036,11 +1036,20 @@ status_t ACodec::setupNativeWindowSizeFormatAndUsage(
+     setNativeWindowColorFormat(eNativeColorFormat);
+ #endif
+ 
++#ifdef MTK_HARDWARE
++    usage |= (GRALLOC_USAGE_SW_WRITE_OFTEN | GRALLOC_USAGE_SW_READ_OFTEN);
++#endif
++
+     ALOGV("gralloc usage: %#x(OMX) => %#x(ACodec)", omxUsage, usage);
+     err = setNativeWindowSizeFormatAndUsage(
+             nativeWindow,
++#ifdef MTK_HARDWARE
++            def.format.video.nStride,
++            def.format.video.nSliceHeight,
++#else
+             def.format.video.nFrameWidth,
+             def.format.video.nFrameHeight,
++#endif
+ #ifdef USE_SAMSUNG_COLORFORMAT
+             eNativeColorFormat,
+ #else
+diff --git a/media/mediaserver/mediaserver.rc b/media/mediaserver/mediaserver.rc
+index f6c325c..fd5693e 100644
+--- a/media/mediaserver/mediaserver.rc
++++ b/media/mediaserver/mediaserver.rc
+@@ -1,6 +1,6 @@
+ service media /system/bin/mediaserver
+     class main
+-    user media
+-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm
++    user root
++    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm system media
+     ioprio rt 4
+     writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
+-- 
+2.7.4
+
