@@ -210,7 +210,7 @@
          This needs to match the constants in
          policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
     -->
-    <integer name="config_longPressOnAppSwitchBehavior">1</integer>
+    <add-resource type="integer" name="config_longPressOnAppSwitchBehavior">1</add-resource>
 
     <!-- Hardware keys present on the device, stored as a bit field.
          This integer should equal the sum of the corresponding value for each
@@ -238,6 +238,6 @@
             64 - Volume rocker
          For example, a device with Home, Back and Menu keys would set this
          config to 7. -->
-    <integer name="config_deviceHardwareWakeKeys">64</integer>
+    <add-resource type="integer" name="config_deviceHardwareWakeKeys">64</add-resource>
 
 </resources>
