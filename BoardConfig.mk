@@ -43,13 +43,8 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 
 # Hardware
 BOARD_USES_MTK_HARDWARE := true
-BOARD_HAS_MTK_HARDWARE := true
-
-
 BOARD_CONNECTIVITY_VENDOR := MediaTek
 BOARD_USES_MTK_AUDIO := true
-TARGET_PROVIDES_INIT_RC := true
-
 
 # Disable memcpy opt (for audio libraries)
 TARGET_CPU_MEMCPY_OPT_DISABLE := true

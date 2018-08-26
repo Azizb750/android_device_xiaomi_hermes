@@ -50,8 +50,7 @@ PRODUCT_PACKAGES += \
 # GPS
 PRODUCT_PACKAGES += \
     gps.mt6795 \
-    libcurl \
-    YGPS
+    libcurl
 
 # DRM
 PRODUCT_PACKAGES += libmockdrmcryptoplugin
