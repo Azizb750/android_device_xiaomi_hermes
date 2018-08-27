@@ -148,3 +148,10 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml
+
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
+    persist.sys.timezone=Europe/Moscow
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.call_recording.enabled=true \
+    persist.call_recording.src=4
