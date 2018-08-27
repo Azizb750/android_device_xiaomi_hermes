@@ -21,6 +21,17 @@ on init
         /system/lib/liblog.so|libshim_xlog.so: \
         /system/lib64/liblog.so|libshim_xlog.so"
 
+    #Charging Battery
+    chown radio radio /sys/devices/platform/battery/Charging_CallState
+
+    # BATTERY proc
+    chown radio system /proc/mtk_battery_cmd/current_cmd
+    chown radio system /proc/mtk_battery_cmd/discharging_cmd
+    chown radio system /proc/mtk_battery_cmd/battery_cmd
+    chmod 0664 /proc/mtk_battery_cmd/current_cmd
+    chmod 0664 /proc/mtk_battery_cmd/discharging_cmd
+    chmod 0664 /proc/mtk_battery_cmd/battery_cmd
+
     # Protect
     mkdir /protect_f 0771 system system
     mkdir /protect_s 0771 system system
