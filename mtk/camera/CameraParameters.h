@@ -539,6 +539,10 @@ public:
     // Supported modes for special effects with light.
     // Example values: "lowlight,hdr".
     static const char KEY_LIGHTFX[];
+    #ifdef MTK_HARDWARE
+        static const char KEY_SNAPSHOT_PICTURE_FLIP[];
+    #endif
+    
 
     // Value for KEY_ZOOM_SUPPORTED or KEY_SMOOTH_ZOOM_SUPPORTED.
     static const char TRUE[];
@@ -588,6 +592,8 @@ public:
     // Constant emission of light during preview, auto-focus and snapshot.
     // This can also be used for video recording.
     static const char FLASH_MODE_TORCH[];
+    static const char FLASH_MODE_TORCH1[];
+    static const char FLASH_MODE_TORCH2[];
 
     // Values for scene mode settings.
     static const char SCENE_MODE_AUTO[];
