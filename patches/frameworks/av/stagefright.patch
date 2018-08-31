@@ -1,0 +1,434 @@
+######## MISSING STAGEFRIGHT SYMBOLS FOR HERMES BY WISNIAPL ################
+
+diff --git a/include/media/stagefright/ColorConverter.h b/include/media/stagefright/ColorConverter.h
+index 270c809..e02aee5 100644
+--- a/include/media/stagefright/ColorConverter.h
++++ b/include/media/stagefright/ColorConverter.h
+@@ -84,6 +84,12 @@ private:
+ 
+     ColorConverter(const ColorConverter &);
+     ColorConverter &operator=(const ColorConverter &);
++#ifdef MTK_HARDWARE
++    status_t convertYUVToRGBHW(
++	const BitmapParams &src, const BitmapParams &dst);
++    void dumpColorConverterData(const char * filepath,
++	const void * buffer, size_t size, const char * propty);
++#endif
+ };
+ 
+ }  // namespace android
+diff --git a/include/media/stagefright/MediaBufferGroup.h b/include/media/stagefright/MediaBufferGroup.h
+index 3051406..da4326d 100644
+--- a/include/media/stagefright/MediaBufferGroup.h
++++ b/include/media/stagefright/MediaBufferGroup.h
+@@ -29,8 +29,12 @@ class MetaData;
+ 
+ class MediaBufferGroup : public MediaBufferObserver {
+ public:
++#ifdef MTK_HARDWARE
++    MediaBufferGroup();
++    MediaBufferGroup(size_t growthLimit);
++#else
+     MediaBufferGroup(size_t growthLimit = 0);
+-
++#endif
+     // create a media buffer group with preallocated buffers
+     MediaBufferGroup(size_t buffers, size_t buffer_size, size_t growthLimit = 0);
+ 
+@@ -48,8 +52,14 @@ public:
+     // If requestedSize is 0, any free MediaBuffer will be returned.
+     // If requestedSize is > 0, the returned MediaBuffer should have buffer
+     // size of at least requstedSize.
++#ifdef MTK_HARDWARE
++    status_t acquire_buffer(MediaBuffer **buffer, bool nonBlocking = false);
++    status_t acquire_buffer(
++            MediaBuffer **buffer, bool nonBlocking, size_t requestedSize);
++#else
+     status_t acquire_buffer(
+             MediaBuffer **buffer, bool nonBlocking = false, size_t requestedSize = 0);
++#endif
+ 
+     size_t buffers() const { return mBuffers.size(); }
+ 
+diff --git a/include/media/stagefright/MediaCodec.h b/include/media/stagefright/MediaCodec.h
+index 05f6581..77b880f 100644
+--- a/include/media/stagefright/MediaCodec.h
++++ b/include/media/stagefright/MediaCodec.h
+@@ -46,12 +46,23 @@ class Surface;
+ struct MediaCodec : public AHandler {
+     enum ConfigureFlags {
+         CONFIGURE_FLAG_ENCODE   = 1,
++#ifdef MTK_HARDWARE
++        CONFIGURE_FLAG_ENABLE_THUMBNAIL_OPTIMIZATION = (0x1<<2),
++#endif
+     };
+ 
+     enum BufferFlags {
+         BUFFER_FLAG_SYNCFRAME   = 1,
+         BUFFER_FLAG_CODECCONFIG = 2,
+         BUFFER_FLAG_EOS         = 4,
++#ifdef MTK_HARDWARE
++        BUFFER_FLAG_ENDOFFRAME  = 8,
++        BUFFER_FLAG_DUMMY       = 16,
++        BUFFER_FLAG_INTERPOLATE_FRAME  = 32,
++        BUFFER_FLAG_INVALID_PTS = 64,
++        BUFFER_FLAG_PARTAIL_FRAME  = 128,
++        BUFFER_FLAG_MULTISLICE = 256,
++#endif
+         BUFFER_FLAG_EXTRADATA   = 0x1000,
+         BUFFER_FLAG_DATACORRUPT = 0x2000,
+     };
+diff --git a/media/libstagefright/Android.mk b/media/libstagefright/Android.mk
+index e708f68..c755aaf 100644
+--- a/media/libstagefright/Android.mk
++++ b/media/libstagefright/Android.mk
+@@ -165,6 +165,11 @@ ifeq ($(TARGET_OMX_LEGACY_RESCALING),true)
+ LOCAL_CFLAGS += -DUSE_LEGACY_RESCALING
+ endif
+ 
++ifeq ($(strip $(BOARD_USES_MTK_HARDWARE)),true)
++
++LOCAL_SHARED_LIBRARIES += libdpframework
++endif
++
+ LOCAL_CFLAGS += -Wno-multichar -Werror -Wno-error=deprecated-declarations -Wall
+ 
+ LOCAL_C_INCLUDES += $(call project-path-for,qcom-media)/mm-core/inc
+diff --git a/media/libstagefright/colorconversion/Android.mk b/media/libstagefright/colorconversion/Android.mk
+index 0bf9701..8ea9566 100644
+--- a/media/libstagefright/colorconversion/Android.mk
++++ b/media/libstagefright/colorconversion/Android.mk
+@@ -13,6 +13,14 @@ LOCAL_C_INCLUDES := \
+ LOCAL_STATIC_LIBRARIES := \
+         libyuv_static \
+ 
++ifeq ($(strip $(BOARD_USES_MTK_HARDWARE)),true)
++LOCAL_C_INCLUDES += \
++        $(TOP)/frameworks/av/media/libstagefright/colorconversion/inc
++
++LOCAL_SHARED_LIBRARIES := \
++	libdpframework
++endif
++
+ LOCAL_CFLAGS += -Werror
+ LOCAL_CLANG := true
+ LOCAL_SANITIZE := signed-integer-overflow
+diff --git a/media/libstagefright/colorconversion/ColorConverter.cpp b/media/libstagefright/colorconversion/ColorConverter.cpp
+index 3ca7cc0..ecab7af 100644
+--- a/media/libstagefright/colorconversion/ColorConverter.cpp
++++ b/media/libstagefright/colorconversion/ColorConverter.cpp
+@@ -24,6 +24,16 @@
+ 
+ #include "libyuv/convert_from.h"
+ 
++#ifdef MTK_HARDWARE
++#include <cutils/properties.h>
++#include "DpBlitStream.h"
++#include <stdio.h>
++#include <utils/Timers.h>
++#include <inttypes.h>
++
++static const int OMX_MTK_COLOR_FormatYV12 = 0x7F000200;
++#endif
++
+ #define USE_LIBYUV
+ 
+ namespace android {
+@@ -41,10 +51,20 @@ ColorConverter::~ColorConverter() {
+ }
+ 
+ bool ColorConverter::isValid() const {
++#ifdef MTK_HARDWARE
++ALOGD("***isValid() mSrcFormat=0x%x,mDstFormat=0x%x",mSrcFormat,mDstFormat);
++    if ((mDstFormat != OMX_COLOR_Format16bitRGB565) &&
++	(mDstFormat != OMX_COLOR_Format32bitARGB8888)) {
++        return ERROR_UNSUPPORTED;
++    }
++    if ((mSrcFormat == OMX_COLOR_Format32bitARGB8888) ||
++	(mSrcFormat == OMX_MTK_COLOR_FormatYV12))
++	return true;
++#else
+     if (mDstFormat != OMX_COLOR_Format16bitRGB565) {
+         return false;
+     }
+-
++#endif
+     switch (mSrcFormat) {
+         case OMX_COLOR_FormatYUV420Planar:
+         case OMX_COLOR_FormatCbYCrY:
+@@ -89,6 +109,7 @@ status_t ColorConverter::convert(
+         size_t dstWidth, size_t dstHeight,
+         size_t dstCropLeft, size_t dstCropTop,
+         size_t dstCropRight, size_t dstCropBottom) {
++ALOGD("***convert() mSrcFormat=0x%x,mDstFormat=0x%x",mSrcFormat,mDstFormat);
+     if (mDstFormat != OMX_COLOR_Format16bitRGB565) {
+         return ERROR_UNSUPPORTED;
+     }
+@@ -104,7 +125,11 @@ status_t ColorConverter::convert(
+             dstCropLeft, dstCropTop, dstCropRight, dstCropBottom);
+ 
+     status_t err;
+-
++#ifdef MTK_HARDWARE
++    if ((mSrcFormat == OMX_COLOR_FormatYUV420Planar) ||
++	(mSrcFormat == OMX_MTK_COLOR_FormatYV12))
++	return convertYUVToRGBHW(src, dst);
++#endif
+     switch (mSrcFormat) {
+         case OMX_COLOR_FormatYUV420Planar:
+ #ifdef USE_LIBYUV
+@@ -232,6 +257,7 @@ status_t ColorConverter::convertYUV420PlanarUseLibYUV(
+     return OK;
+ }
+ 
++#if !(defined(USE_LIBYUV) && defined(MTK_HARDWARE))
+ status_t ColorConverter::convertYUV420Planar(
+         const BitmapParams &src, const BitmapParams &dst) {
+     if (!((src.mCropLeft & 1) == 0
+@@ -325,6 +351,7 @@ status_t ColorConverter::convertYUV420Planar(
+ 
+     return OK;
+ }
++#endif
+ 
+ status_t ColorConverter::convertQCOMYUV420SemiPlanar(
+         const BitmapParams &src, const BitmapParams &dst) {
+@@ -557,4 +584,208 @@ uint8_t *ColorConverter::initClip() {
+     return &mClip[-kClipMin];
+ }
+ 
++#ifdef MTK_HARDWARE
++status_t ColorConverter::convertYUVToRGBHW(const BitmapParams &src, const BitmapParams &dst)
++{
++    ALOGD("srcWidth(%zu), srcHeight(%zu), srcCropLeft(%zu), srcCropTop(%zu), srcCropRight(%zu), srcCropBottom(%zu)",
++       src.mWidth, src.mHeight, src.mCropLeft, src.mCropTop, src.mCropRight, src.mCropBottom);
++    ALOGD("dstWidth(%zu), dstHeight(%zu), dstCropLeft(%zu), dstCropTop(%zu), dstCropRight(%zu), dstCropBottom(%zu)",
++       dst.mWidth, dst.mHeight, dst.mCropLeft, dst.mCropTop, dst.mCropRight, dst.mCropBottom);
++    DpBlitStream *blitStream = new DpBlitStream();
++//    int srcWidth = src.cropWidth();
++//    int srcHeight = src.cropHeight();
++    unsigned int srcWStride = src.mWidth;
++    unsigned int srcHStride = src.mHeight;
++
++    DpRect srcRoi;
++    srcRoi.x = 0;
++    srcRoi.y = 0;
++    srcRoi.w = dst.mWidth;
++    srcRoi.h = dst.mHeight;
++
++    ALOGD("src stride aligned, w(%d), h(%d)", srcWStride, srcHStride);
++
++    unsigned int dstWStride = dst.mWidth ;
++    unsigned int dstHStride = dst.mHeight ;
++    char name_yuv[100];
++    char retriever_yuv_propty[100];
++    char name_rgb[100];
++    char retriever_propty_rgb[100];
++
++    if (mSrcFormat == OMX_COLOR_FormatYUV420Planar) {
++    char* planar[3];
++    unsigned int length[3];
++    planar[0] = (char*)src.mBits;
++    length[0] = srcWStride*srcHStride;
++    planar[1] = planar[0] + length[0];
++    length[1] = srcWStride*srcHStride/4;
++    planar[2] = planar[1] + length[1];
++    length[2] = length[1];
++    ALOGD("Yaddr(%p), Uaddr(%p), Vaddr(%p) YUV420P", planar[0], planar[1], planar[2]);
++    ALOGD("Ylen(%d), Ulen(%d), Vlen(%d)", length[0], length[1], length[2]);
++
++    blitStream->setSrcBuffer((void**)planar, (unsigned int*)length, 3);
++    blitStream->setSrcConfig(srcWStride, srcHStride, eYUV_420_3P, eInterlace_None, &srcRoi);
++    }
++    else if (mSrcFormat == OMX_MTK_COLOR_FormatYV12) {
++        char* planar[3];
++        unsigned int length[3];
++        planar[0] = (char*)src.mBits;
++        length[0] = srcWStride*srcHStride;
++        planar[1] = planar[0] + length[0];
++        length[1] = (((srcWStride>>1)+0xf) & (~0xf))*srcHStride/2;
++        planar[2] = planar[1] + length[1];
++        length[2] = length[1];
++        ALOGD("Yaddr(%p), Uaddr(%p), Vaddr(%p) YV12", planar[0], planar[1], planar[2]);
++        ALOGD("Ylen(%d), Ulen(%d), Vlen(%d)", length[0], length[1], length[2]);
++
++        blitStream->setSrcBuffer((void**)planar, (unsigned int*)length, 3);
++        //blitStream->setSrcConfig(srcWStride, srcHStride, eYV12, eInterlace_None, &srcRoi);
++        blitStream->setSrcConfig(srcWStride, srcHStride, srcWStride, (((srcWStride>>1)+0xf) & (~0xf)), eYV12, DP_PROFILE_BT601, eInterlace_None, &srcRoi);
++    }
++    else if (mSrcFormat == OMX_COLOR_Format32bitARGB8888) {
++        char* planar[1];
++        unsigned int length[1];
++        planar[0] = (char*)src.mBits;
++        length[0] = srcWStride*srcHStride*4;
++        blitStream->setSrcBuffer((void**)planar, (unsigned int*)length, 1);
++        blitStream->setSrcConfig(srcWStride, srcHStride, eRGBA8888, eInterlace_None, &srcRoi);
++    }
++/*
++    if (mSrcFormat == HAL_PIXEL_FORMAT_YCbCr_420_888) {
++        char* planar[3];
++        unsigned int length[3];
++        planar[0] = (char*)src.mBits;
++        length[0] = srcWStride*srcHStride;
++        planar[1] = planar[0] + length[0];
++        length[1] = (((srcWStride>>1)+0xf) & (~0xf))*srcHStride/2;
++        planar[2] = planar[1] + length[1];
++        length[2] = length[1];
++        ALOGD("Yaddr(%p), Uaddr(%p), Vaddr(%p) YV12", planar[0], planar[1], planar[2]);
++        ALOGD("Ylen(%d), Ulen(%d), Vlen(%d)", length[0], length[1], length[2]);
++
++        blitStream->setSrcBuffer((void**)planar, (unsigned int*)length, 3);
++        //blitStream->setSrcConfig(srcWStride, srcHStride, eYV12, eInterlace_None, &srcRoi);
++        blitStream->setSrcConfig(srcWStride, srcHStride, srcWStride, (((srcWStride>>1)+0xf) & (~0xf)), eYV12, DP_PROFILE_BT601, eInterlace_None, &srcRoi);
++    }
++    else if (mSrcFormat == OMX_COLOR_FormatVendorMTKYUV) {
++        char* planar[2];
++        unsigned int length[2];
++        planar[0] = (char*)src.mBits;
++        length[0] = srcWStride*srcHStride;
++        planar[1] = planar[0] + length[0];
++        length[1] = srcWStride*srcHStride/2;
++        ALOGD("Yaddr(%p), Caddr(%p)", planar[0], planar[1]);
++        ALOGD("Ylen(%d), Clen(%d)", length[0], length[1]);
++
++        blitStream->setSrcBuffer((void**)planar, (unsigned int*)length, 2);
++        //blitStream->setSrcConfig(srcWStride, srcHStride, eNV12_BLK, eInterlace_None, &srcRoi);
++        blitStream->setSrcConfig(srcWStride, srcHStride, srcWStride * 32, srcWStride * 16, eNV12_BLK, DP_PROFILE_BT601, eInterlace_None, &srcRoi);
++    }
++    else if (mSrcFormat == OMX_COLOR_FormatVendorMTKYUV_FCM) {
++        char* planar[2];
++        unsigned int length[2];
++        planar[0] = (char*)src.mBits;
++        length[0] = srcWStride*srcHStride;
++        planar[1] = planar[0] + length[0];
++        length[1] = srcWStride*srcHStride/2;
++        ALOGD("Yaddr(%p), Caddr(%p)", planar[0], planar[1]);
++        ALOGD("Ylen(%d), Clen(%d)", length[0], length[1]);
++
++        blitStream->setSrcBuffer((void**)planar, (unsigned int*)length, 2);
++        //blitStream->setSrcConfig(srcWStride, srcHStride, eNV12_BLK_FCM, eInterlace_None, &srcRoi);
++        blitStream->setSrcConfig(srcWStride, srcHStride, srcWStride * 32, srcWStride * 16, eNV12_BLK_FCM, DP_PROFILE_BT601, eInterlace_None, &srcRoi);
++    }
++    else if (mSrcFormat == OMX_COLOR_FormatVendorMTKYUV_10BIT_H) {
++        char* planar[2];
++        unsigned int length[2];
++        planar[0] = (char*)src.mBits;
++        length[0] = srcWStride*srcHStride*5/4;
++        planar[1] = planar[0] + VDEC_ROUND_N(length[0], 512);
++        length[1] = length[0] >> 1;
++        ALOGD("Yaddr(%p), Caddr(%p)", planar[0], planar[1]);
++        ALOGD("Ylen(%d), Clen(%d)", length[0], length[1]);
++
++        blitStream->setSrcBuffer((void**)planar, (unsigned int*)length, 2);
++        //blitStream->setSrcConfig(srcWStride, srcHStride, eNV12_BLK, eInterlace_None, &srcRoi);
++        blitStream->setSrcConfig(srcWStride, srcHStride, srcWStride * 40, srcWStride * 20, DP_COLOR_420_BLKP_10_H, DP_PROFILE_BT601, eInterlace_None, &srcRoi);
++    }
++    else if (mSrcFormat == OMX_COLOR_FormatVendorMTKYUV_10BIT_V) {
++        char* planar[2];
++        unsigned int length[2];
++        planar[0] = (char*)src.mBits;
++        length[0] = srcWStride*srcHStride*5/4;
++        planar[1] = planar[0] + VDEC_ROUND_N(length[0], 512);
++        length[1] = length[0] >> 1;
++        ALOGD("Yaddr(%p), Caddr(%p)", planar[0], planar[1]);
++        ALOGD("Ylen(%d), Clen(%d)", length[0], length[1]);
++
++        blitStream->setSrcBuffer((void**)planar, (unsigned int*)length, 2);
++        //blitStream->setSrcConfig(srcWStride, srcHStride, eNV12_BLK, eInterlace_None, &srcRoi);
++        blitStream->setSrcConfig(srcWStride, srcHStride, srcWStride * 40, srcWStride * 20, DP_COLOR_420_BLKP_10_V, DP_PROFILE_BT601, eInterlace_None, &srcRoi);
++    }
++*/
++    ALOGD("dst addr(%p), w(%d), h(%d)", dst.mBits, dstWStride, dstHStride);
++    if (mDstFormat == OMX_COLOR_Format16bitRGB565) {
++    blitStream->setDstBuffer(dst.mBits, dst.mWidth * dst.mHeight * 2);
++    blitStream->setDstConfig(dst.mWidth, dst.mHeight, eRGB565);
++    }
++    else if (mDstFormat == OMX_COLOR_Format32bitARGB8888) {
++    blitStream->setDstBuffer(dst.mBits, dst.mWidth * dst.mHeight * 4);
++        //  blitStream->setDstConfig(dst.mWidth, dst.mHeight, eARGB8888);
++    blitStream->setDstConfig(dst.mWidth, dst.mHeight, eRGBA8888);
++    }
++
++    sprintf(name_yuv, "/sdcard/retriever_%" PRId64 "_%zu_%zu.yuv",systemTime(),src.mWidth,src.mHeight);
++    sprintf(retriever_yuv_propty, "retriever.dump.yuv");
++    dumpColorConverterData(name_yuv,src.mBits,(src.mWidth*src.mHeight)*2,retriever_yuv_propty);
++
++    //Add Sharpness in Video Thumbnail
++    blitStream->setTdshp(1);
++    bool bRet = blitStream->invalidate();
++    ALOGI("blitStream return %d.", bRet);
++
++    sprintf(name_rgb, "/sdcard/retriever_%" PRId64 "_%zu_%zu.rgb",systemTime(),dst.mWidth,dst.mHeight);
++    sprintf(retriever_propty_rgb, "retriever.dump.rgb");
++    if (mDstFormat == OMX_COLOR_Format16bitRGB565){
++        dumpColorConverterData(name_rgb,dst.mBits, dst.mWidth*dst.mHeight*2, retriever_propty_rgb);
++    }else if(mDstFormat == OMX_COLOR_Format32bitARGB8888){
++        dumpColorConverterData(name_rgb,dst.mBits, dst.mWidth*dst.mHeight*4, retriever_propty_rgb);
++    }
++
++    if(!bRet)
++        return OK;
++    else
++        return UNKNOWN_ERROR;
++// debug: dump output buffer
++/*	sprintf(name, "/sdcard/clrcvt_output_%d_dmp", i);
++	fp = fopen(name, "w");
++	if (mDstFormat == OMX_COLOR_Format16bitRGB565)
++		fwrite(dst.mBits, dst.mWidth*dst.mHeight*2, 1, fp);
++	else if (mDstFormat == OMX_COLOR_Format32bitARGB8888)
++		fwrite(dst.mBits, dst.mWidth*dst.mHeight*4, 1, fp);
++	fclose(fp);
++	i++;
++*/
++    return OK;
++}
++
++void ColorConverter::dumpColorConverterData(const char * filepath, const void * buffer, size_t size,const char * propty) {
++
++    char value[PROPERTY_VALUE_MAX];
++    property_get(propty, value, "0");
++    int bflag=atoi(value);
++
++    if (bflag) {
++       FILE * fp= fopen (filepath, "w");
++       if (fp!=NULL) {
++            fwrite(buffer,size,1,fp);
++            fclose(fp);
++       } else {
++            ALOGV("dump %s fail",propty);
++       }
++    }
++}
++#endif
++
+ }  // namespace android
+diff --git a/media/libstagefright/foundation/MediaBufferGroup.cpp b/media/libstagefright/foundation/MediaBufferGroup.cpp
+index 8e4d064..97c807f 100644
+--- a/media/libstagefright/foundation/MediaBufferGroup.cpp
++++ b/media/libstagefright/foundation/MediaBufferGroup.cpp
+@@ -31,7 +31,11 @@ constexpr T MIN(const T &a, const T &b) { return a <= b ? a : b; }
+ // smaller threshold than an isolated new MediaBuffer.
+ static const size_t kSharedMemoryThreshold = MIN(
+         (size_t)MediaBuffer::kSharedMemThreshold, (size_t)(4 * 1024));
+-
++#ifdef MTK_HARDWARE
++MediaBufferGroup::MediaBufferGroup() :
++    mGrowthLimit(0) {
++}
++#endif
+ MediaBufferGroup::MediaBufferGroup(size_t growthLimit) :
+     mGrowthLimit(growthLimit) {
+ }
+@@ -137,7 +141,11 @@ bool MediaBufferGroup::has_buffers() {
+     }
+     return false;
+ }
+-
++#ifdef MTK_HARDWARE
++status_t MediaBufferGroup::acquire_buffer(MediaBuffer **buffer, bool nonBlocking) {
++    return acquire_buffer(buffer, nonBlocking, 0);
++}
++#endif
+ status_t MediaBufferGroup::acquire_buffer(
+         MediaBuffer **out, bool nonBlocking, size_t requestedSize) {
+     Mutex::Autolock autoLock(mLock);
