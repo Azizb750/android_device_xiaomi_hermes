@@ -48,7 +48,6 @@ BOARD_USES_MTK_HARDWARE := true
 BOARD_CONNECTIVITY_VENDOR := MediaTek
 BOARD_USES_MTK_AUDIO := true
 TARGET_KMODULES := true
-BOARD_DISABLE_HW_ID_MATCH_CHECK := true
 
 # Disable memcpy opt (for audio libraries)
 TARGET_CPU_MEMCPY_OPT_DISABLE := true
@@ -60,12 +59,10 @@ TARGET_REQUIRES_SYNCHRONOUS_SETSURFACE := true
 # Display
 BOARD_EGL_CFG := $(LOCAL_PATH)/mtk/egl.cfg
 
-# build old-style zip files (required for ota updater)
-BLOCK_BASED_OTA := false
-
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 YELLOW_LED_PATH := /sys/class/leds/yellow/brightness
+BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/BOOT/BOOT/boot/boot_mode
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
