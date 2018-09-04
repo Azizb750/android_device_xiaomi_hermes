@@ -54,9 +54,9 @@ index f6c325c..fd5693e 100644
 @@ -1,6 +1,6 @@
  service media /system/bin/mediaserver
      class main
--    user media
+-    user mediaserver
 -    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm
-+    user root
++    user media
 +    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm system media
      ioprio rt 4
      writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
