@@ -1,5 +1,60 @@
-######## Stagefire MISSING SYMBOLS FOR HERMES BY WISNIAPL ################
+ camera/CameraParameters.cpp                        |   3 +
+ camera/cameraserver/cameraserver.rc                |   2 +-
+ include/camera/CameraParameters.h                  |   3 +
+ include/media/stagefright/ColorConverter.h         |   6 +
+ include/media/stagefright/MediaBufferGroup.h       |  12 +-
+ include/media/stagefright/MediaCodec.h             |  11 +
+ media/libstagefright/Android.mk                    |   6 +
+ media/libstagefright/colorconversion/Android.mk    |  10 +
+ .../colorconversion/ColorConverter.cpp             | 235 +++++++-
+ .../colorconversion/inc/DpBlitStream.h             | 209 +++++++
+ .../libstagefright/colorconversion/inc/DpConfig.h  |  24 +
+ .../colorconversion/inc/DpDataType.h               | 631 +++++++++++++++++++++
+ .../libstagefright/foundation/MediaBufferGroup.cpp |  12 +-
+ .../camera/libcameraservice/api1/CameraClient.cpp  |  99 +++-
+ .../camera/libcameraservice/api1/CameraClient.h    |   5 +
+ 15 files changed, 1257 insertions(+), 11 deletions(-)
 
+diff --git a/camera/CameraParameters.cpp b/camera/CameraParameters.cpp
+index 76f92e7..38cdc5f 100644
+--- a/camera/CameraParameters.cpp
++++ b/camera/CameraParameters.cpp
+@@ -93,6 +93,9 @@ const char CameraParameters::KEY_VIDEO_SNAPSHOT_SUPPORTED[] = "video-snapshot-su
+ const char CameraParameters::KEY_VIDEO_STABILIZATION[] = "video-stabilization";
+ const char CameraParameters::KEY_VIDEO_STABILIZATION_SUPPORTED[] = "video-stabilization-supported";
+ const char CameraParameters::KEY_LIGHTFX[] = "light-fx";
++#ifdef MTK_HARDWARE
++const char CameraParameters::KEY_SNAPSHOT_PICTURE_FLIP[] = "snapshot-picture-filp";
++#endif
+ 
+ const char CameraParameters::TRUE[] = "true";
+ const char CameraParameters::FALSE[] = "false";
+diff --git a/camera/cameraserver/cameraserver.rc b/camera/cameraserver/cameraserver.rc
+index fea5a1d..08277d6 100644
+--- a/camera/cameraserver/cameraserver.rc
++++ b/camera/cameraserver/cameraserver.rc
+@@ -1,6 +1,6 @@
+ service cameraserver /system/bin/cameraserver
+     class main
+     user cameraserver
+-    group audio camera input drmrpc
++    group audio camera input drmrpc media
+     ioprio rt 4
+     writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
+diff --git a/include/camera/CameraParameters.h b/include/camera/CameraParameters.h
+index 74517b4..d17a6a1 100644
+--- a/include/camera/CameraParameters.h
++++ b/include/camera/CameraParameters.h
+@@ -538,6 +538,9 @@ public:
+     // Supported modes for special effects with light.
+     // Example values: "lowlight,hdr".
+     static const char KEY_LIGHTFX[];
++#ifdef MTK_HARDWARE
++    static const char KEY_SNAPSHOT_PICTURE_FLIP[];
++#endif
+ 
+     // Value for KEY_ZOOM_SUPPORTED or KEY_SMOOTH_ZOOM_SUPPORTED.
+     static const char TRUE[];
 diff --git a/include/media/stagefright/ColorConverter.h b/include/media/stagefright/ColorConverter.h
 index 270c809..e02aee5 100644
 --- a/include/media/stagefright/ColorConverter.h
@@ -1314,3 +1369,184 @@ index 8e4d064..97c807f 100644
  status_t MediaBufferGroup::acquire_buffer(
          MediaBuffer **out, bool nonBlocking, size_t requestedSize) {
      Mutex::Autolock autoLock(mLock);
+diff --git a/services/camera/libcameraservice/api1/CameraClient.cpp b/services/camera/libcameraservice/api1/CameraClient.cpp
+index b02d8f9..f2db72f 100644
+--- a/services/camera/libcameraservice/api1/CameraClient.cpp
++++ b/services/camera/libcameraservice/api1/CameraClient.cpp
+@@ -30,6 +30,13 @@ namespace android {
+ #define LOG1(...) ALOGD_IF(gLogLevel >= 1, __VA_ARGS__);
+ #define LOG2(...) ALOGD_IF(gLogLevel >= 2, __VA_ARGS__);
+ 
++#ifdef MTK_HARDWARE
++enum {
++    MTK_CAMERA_MSG_EXT_NOTIFY	= 0x40000000,
++    MTK_CAMERA_MSG_EXT_DATA	= 0x80000000
++};
++#endif
++
+ static int getCallingPid() {
+     return IPCThreadState::self()->getCallingPid();
+ }
+@@ -95,7 +102,9 @@ status_t CameraClient::initialize(CameraModule *module) {
+     // Enable zoom, error, focus, and metadata messages by default
+     enableMsgType(CAMERA_MSG_ERROR | CAMERA_MSG_ZOOM | CAMERA_MSG_FOCUS |
+                   CAMERA_MSG_PREVIEW_METADATA | CAMERA_MSG_FOCUS_MOVE);
+-
++#ifdef MTK_HARDWARE
++    enableMsgType(MTK_CAMERA_MSG_EXT_NOTIFY | MTK_CAMERA_MSG_EXT_DATA);
++#endif
+     LOG1("CameraClient::initialize X (pid %d, id %d)", callingPid, mCameraId);
+     return OK;
+ }
+@@ -365,14 +374,12 @@ status_t CameraClient::setPreviewCallbackTarget(
+ 
+ // start preview mode
+ status_t CameraClient::startPreview() {
+-    Mutex::Autolock lock(mLock);
+     LOG1("startPreview (pid %d)", getCallingPid());
+     return startCameraMode(CAMERA_PREVIEW_MODE);
+ }
+ 
+ // start recording mode
+ status_t CameraClient::startRecording() {
+-    Mutex::Autolock lock(mLock);
+     LOG1("startRecording (pid %d)", getCallingPid());
+     return startCameraMode(CAMERA_RECORDING_MODE);
+ }
+@@ -380,6 +387,7 @@ status_t CameraClient::startRecording() {
+ // start preview or recording
+ status_t CameraClient::startCameraMode(camera_mode mode) {
+     LOG1("startCameraMode(%d)", mode);
++    Mutex::Autolock lock(mLock);
+     status_t result = checkPidAndHardware();
+     if (result != NO_ERROR) return result;
+ 
+@@ -750,6 +758,9 @@ void CameraClient::disableMsgType(int32_t msgType) {
+ 
+ #define CHECK_MESSAGE_INTERVAL 10 // 10ms
+ bool CameraClient::lockIfMessageWanted(int32_t msgType) {
++#if MTK_HARDWARE
++    return true;
++#endif
+     int sleepCount = 0;
+     while (mMsgEnabled & msgType) {
+         if (mLock.tryLock() == NO_ERROR) {
+@@ -798,7 +809,24 @@ void CameraClient::notifyCallback(int32_t msgType, int32_t ext1,
+     if (client.get() == nullptr) return;
+ 
+     if (!client->lockIfMessageWanted(msgType)) return;
+-
++#ifdef MTK_HARDWARE
++    if (msgType == MTK_CAMERA_MSG_EXT_NOTIFY) {
++	LOG2("MtknotifyCallback(ext1:0x%x, ext2:0x%x)", ext1, ext2);
++	switch (ext1) {
++	    case 0x10:	// MTK_CAMERA_MSG_EXT_NOTIFY_CAPTURE_DONE
++		client->disableMsgType(CAMERA_MSG_SHUTTER | CAMERA_MSG_COMPRESSED_IMAGE);
++		break;
++	    case 0x11:	// MTK_CAMERA_MSG_EXT_NOTIFY_SHUTTER
++		client->handleMtkShutter(ext2);
++		break;
++	    default:
++		// bypass unhandled message for the time being
++		ALOGE("ext1 unhandled");
++		break;
++	}
++	return;
++    }
++#endif
+     switch (msgType) {
+         case CAMERA_MSG_SHUTTER:
+             // ext1 is the dimension of the yuv picture.
+@@ -823,7 +851,46 @@ void CameraClient::dataCallback(int32_t msgType,
+         client->handleGenericNotify(CAMERA_MSG_ERROR, UNKNOWN_ERROR, 0);
+         return;
+     }
+-
++#ifdef MTK_HARDWARE
++    if ((msgType & MTK_CAMERA_MSG_EXT_DATA) != 0) {
++	struct DataHeader {
++	    uint32_t extMsgType;
++	} dataHeader;
++	ssize_t offset;
++	size_t size;
++	if (dataPtr != 0) {
++	    sp<IMemoryHeap> heap = dataPtr->getMemory(&offset, &size);
++
++	    if  (heap->base())
++		::memcpy(&dataHeader, ((uint8_t*)heap->base()) + offset, sizeof(DataHeader));
++
++	    LOG2("MtkDataCallback(extMsgType:0x%x)", dataHeader.extMsgType);
++
++	    switch (dataHeader.extMsgType) {
++		case 0x2:	// MTK_CAMERA_MSG_EXT_DATA_AF
++		    client->handleMtkGenericData(CAMERA_MSG_FOCUS, NULL, NULL);
++		    break;
++		case 0x10:	// MTK_CAMERA_MSG_EXT_DATA_COMPRESSED_IMAGE
++		    {
++			sp<MemoryBase> image = new MemoryBase(heap,
++				(offset + sizeof(DataHeader) + sizeof(uint_t)),
++				(size - sizeof(DataHeader) - sizeof(uint_t)));
++			if (image == 0)
++			    ALOGE("fail to new MemoryBase");
++			else
++			    client->handleMtkGenericData(CAMERA_MSG_COMPRESSED_IMAGE, image, NULL);
++		    }
++		    break;
++	        default:
++		    // bypass unhandled message for the time being
++		    LOG2("extMsgType not handled**");
++		    //client->handleMtkGenericData(MTK_CAMERA_MSG_EXT_DATA, dataPtr, metadata);
++		    break;
++	    }
++	}
++	return;
++    }
++#endif
+     switch (msgType & ~CAMERA_MSG_PREVIEW_METADATA) {
+         case CAMERA_MSG_PREVIEW_FRAME:
+             client->handlePreviewData(msgType, dataPtr, metadata);
+@@ -861,6 +928,28 @@ void CameraClient::dataCallbackTimestamp(nsecs_t timestamp,
+     client->handleGenericDataTimestamp(timestamp, msgType, dataPtr);
+ }
+ 
++// Mtk callbacks
++#ifdef MTK_HARDWARE
++void CameraClient::handleMtkShutter(int32_t ext2) {
++    if (mPlayShutterSound && (ext2 == 1)) {
++        mCameraService->playSound(CameraService::SOUND_SHUTTER);
++    }
++
++    sp<hardware::ICameraClient> c = mRemoteCallback;
++    if (c != 0) {
++        c->notifyCallback(CAMERA_MSG_SHUTTER, 0, 0);
++    }
++}
++
++void CameraClient::handleMtkGenericData(int32_t msgType,
++    const sp<IMemory>& dataPtr, camera_frame_metadata_t *metadata) {
++    sp<hardware::ICameraClient> c = mRemoteCallback;
++    if (c != 0) {
++        c->dataCallback(msgType, dataPtr, metadata);
++    }
++}
++#endif
++
+ // snapshot taken callback
+ void CameraClient::handleShutter(void) {
+     if (mPlayShutterSound) {
+diff --git a/services/camera/libcameraservice/api1/CameraClient.h b/services/camera/libcameraservice/api1/CameraClient.h
+index 55f64aa..19f3ff5 100644
+--- a/services/camera/libcameraservice/api1/CameraClient.h
++++ b/services/camera/libcameraservice/api1/CameraClient.h
+@@ -104,6 +104,11 @@ private:
+             camera_frame_metadata_t *metadata, void* user);
+     static void             dataCallbackTimestamp(nsecs_t timestamp, int32_t msgType, const sp<IMemory>& dataPtr, void* user);
+     // handlers for messages
++#ifdef MTK_HARDWARE
++    void                    handleMtkShutter(int32_t ext2);
++    void                    handleMtkGenericData(int32_t msgType, const sp<IMemory>& dataPtr,
++            camera_frame_metadata_t *metadata);
++#endif
+     void                    handleShutter(void);
+     void                    handlePreviewData(int32_t msgType, const sp<IMemory>& mem,
+             camera_frame_metadata_t *metadata);
