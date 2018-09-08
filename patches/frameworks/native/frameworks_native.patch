@@ -1,4 +1,4 @@
-From 5b05e7bf8edf89e4dd98c5c95bbede96442ef827 Mon Sep 17 00:00:00 2001
+From 977aa7cdc67436ec33885d476b94e9149712b774 Mon Sep 17 00:00:00 2001
 From: Wang Xuerui <idontknw.wang@gmail.com>
 Date: Tue, 8 Dec 2015 15:31:04 +0800
 Subject: [PATCH] libui: add MTK bits
@@ -18,6 +18,7 @@ libui: GraphicBufferMapper: fix for MTK camera HAL
 Change-Id: I131ee891f206ee23c0755c6aac3bdd09ccaf0e1d
 ---
  include/ui/Fence.h                                 |   5 +
+ include/ui/GraphicBufferMapper.h                   |   9 ++
  include/ui/mediatek/IDumpTunnel.h                  |  49 +++++++++
  include/ui/mediatek/RefBaseDump.h                  |  63 ++++++++++++
  libs/ui/Android.mk                                 |  15 +++
@@ -41,10 +42,10 @@ Change-Id: I131ee891f206ee23c0755c6aac3bdd09ccaf0e1d
  create mode 100644 libs/ui/mediatek/test/RefBaseDumpTunnel/RefBaseDumpTunnel.h
 
 diff --git a/include/ui/Fence.h b/include/ui/Fence.h
-index b431bd5..befd640 100644
+index b431bd52a..befd64045 100644
 --- a/include/ui/Fence.h
 +++ b/include/ui/Fence.h
-@@ -110,6 +110,11 @@ class Fence
+@@ -110,6 +110,11 @@ private:
      const Fence& operator = (const Fence& rhs) const;
  
      int mFenceFd;
@@ -56,9 +57,29 @@ index b431bd5..befd640 100644
  };
  
  }; // namespace android
+diff --git a/include/ui/GraphicBufferMapper.h b/include/ui/GraphicBufferMapper.h
+index 294ffedb3..cf26f073a 100644
+--- a/include/ui/GraphicBufferMapper.h
++++ b/include/ui/GraphicBufferMapper.h
+@@ -73,6 +73,15 @@ private:
+     std::unique_ptr<Gralloc1::Device> mDevice;
+ };
+ 
++#ifdef MTK_HARDWARE
++extern "C" {
++
++    status_t _ZN7android19GraphicBufferMapper4lockEPK13native_handleiRKNS_4RectEPPv(
++            buffer_handle_t handle, int usage, const Rect& bounds, void** vaddr);
++
++}
++#endif
++
+ // ---------------------------------------------------------------------------
+ 
+ }; // namespace android
 diff --git a/include/ui/mediatek/IDumpTunnel.h b/include/ui/mediatek/IDumpTunnel.h
 new file mode 100644
-index 0000000..8f9b663
+index 000000000..8f9b6636b
 --- /dev/null
 +++ b/include/ui/mediatek/IDumpTunnel.h
 @@ -0,0 +1,49 @@
@@ -113,7 +134,7 @@ index 0000000..8f9b663
 +#endif
 diff --git a/include/ui/mediatek/RefBaseDump.h b/include/ui/mediatek/RefBaseDump.h
 new file mode 100644
-index 0000000..8431544
+index 000000000..84315443a
 --- /dev/null
 +++ b/include/ui/mediatek/RefBaseDump.h
 @@ -0,0 +1,63 @@
@@ -181,10 +202,10 @@ index 0000000..8431544
 +};
 +#endif
 diff --git a/libs/ui/Android.mk b/libs/ui/Android.mk
-index d8cabad..f2cd4c2 100644
+index 2b16365c3..fc8460f86 100644
 --- a/libs/ui/Android.mk
 +++ b/libs/ui/Android.mk
-@@ -46,6 +46,16 @@ LOCAL_SRC_FILES := \
+@@ -48,6 +48,16 @@ LOCAL_SRC_FILES := \
  	Region.cpp \
  	UiConfig.cpp
  
@@ -201,7 +222,7 @@ index d8cabad..f2cd4c2 100644
  LOCAL_SHARED_LIBRARIES := \
  	libbinder \
  	libcutils \
-@@ -54,6 +64,11 @@ LOCAL_SHARED_LIBRARIES := \
+@@ -56,6 +66,11 @@ LOCAL_SHARED_LIBRARIES := \
  	libutils \
  	liblog
  
@@ -213,9 +234,42 @@ index d8cabad..f2cd4c2 100644
  ifneq ($(BOARD_FRAMEBUFFER_FORCE_FORMAT),)
  LOCAL_CFLAGS += -DFRAMEBUFFER_FORCE_FORMAT=$(BOARD_FRAMEBUFFER_FORCE_FORMAT)
  endif
+diff --git a/libs/ui/GraphicBufferMapper.cpp b/libs/ui/GraphicBufferMapper.cpp
+index bb860932c..2fc831908 100644
+--- a/libs/ui/GraphicBufferMapper.cpp
++++ b/libs/ui/GraphicBufferMapper.cpp
+@@ -90,6 +90,28 @@ static inline gralloc1_rect_t asGralloc1Rect(const Rect& rect) {
+     outRect.height = rect.height();
+     return outRect;
+ }
++    
++#ifdef MTK_HARDWARE
++    extern "C" {
++        
++        extern status_t _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPv(buffer_handle_t, uint32_t, const Rect&, void**);
++        extern status_t _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handlejRKNS_4RectEP13android_ycbcr(buffer_handle_t, uint32_t, const Rect&, android_ycbcr *);
++        
++        
++        status_t _ZN7android19GraphicBufferMapper4lockEPK13native_handleiRKNS_4RectEPPv(buffer_handle_t handle,
++                                                                                        int usage, const Rect& bounds, void** vaddr)
++        {
++            return _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPv(handle, static_cast<uint32_t>(usage), bounds, vaddr);
++        }
++        
++        
++        status_t _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handleiRKNS_4RectEP13android_ycbcr(buffer_handle_t handle,
++                                                                                                          int usage, const Rect& bounds, android_ycbcr *ycbcr)
++        {
++            return _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handlejRKNS_4RectEP13android_ycbcr(handle, static_cast<uint32_t>(usage), bounds, ycbcr);
++        }
++    }
++#endif
+ 
+ status_t GraphicBufferMapper::lock(buffer_handle_t handle, uint32_t usage,
+         const Rect& bounds, void** vaddr)
 diff --git a/libs/ui/mediatek/Fence.cpp b/libs/ui/mediatek/Fence.cpp
 new file mode 100644
-index 0000000..c604cd0
+index 000000000..c604cd032
 --- /dev/null
 +++ b/libs/ui/mediatek/Fence.cpp
 @@ -0,0 +1,59 @@
@@ -280,7 +334,7 @@ index 0000000..c604cd0
 +} // namespace android
 diff --git a/libs/ui/mediatek/IDumpTunnel.cpp b/libs/ui/mediatek/IDumpTunnel.cpp
 new file mode 100644
-index 0000000..d52f72a
+index 000000000..d52f72a61
 --- /dev/null
 +++ b/libs/ui/mediatek/IDumpTunnel.cpp
 @@ -0,0 +1,114 @@
@@ -400,7 +454,7 @@ index 0000000..d52f72a
 +};
 diff --git a/libs/ui/mediatek/RefBaseDump.cpp b/libs/ui/mediatek/RefBaseDump.cpp
 new file mode 100644
-index 0000000..333add4
+index 000000000..333add489
 --- /dev/null
 +++ b/libs/ui/mediatek/RefBaseDump.cpp
 @@ -0,0 +1,111 @@
@@ -517,14 +571,14 @@ index 0000000..333add4
 +}
 diff --git a/libs/ui/mediatek/test/Android.mk b/libs/ui/mediatek/test/Android.mk
 new file mode 100755
-index 0000000..82e7389
+index 000000000..82e7389eb
 --- /dev/null
 +++ b/libs/ui/mediatek/test/Android.mk
 @@ -0,0 +1 @@
 +#barrier
 diff --git a/libs/ui/mediatek/test/RefBaseDumpTunnel/Android.mk b/libs/ui/mediatek/test/RefBaseDumpTunnel/Android.mk
 new file mode 100755
-index 0000000..79edcbc
+index 000000000..79edcbca2
 --- /dev/null
 +++ b/libs/ui/mediatek/test/RefBaseDumpTunnel/Android.mk
 @@ -0,0 +1,15 @@
@@ -545,10 +599,10 @@ index 0000000..79edcbc
 +include $(BUILD_EXECUTABLE)
 diff --git a/libs/ui/mediatek/test/RefBaseDumpTunnel/RefBaseDumpTunnel.cpp b/libs/ui/mediatek/test/RefBaseDumpTunnel/RefBaseDumpTunnel.cpp
 new file mode 100644
-index 0000000..f935808
+index 000000000..f93580821
 --- /dev/null
 +++ b/libs/ui/mediatek/test/RefBaseDumpTunnel/RefBaseDumpTunnel.cpp
-@@ -0,0 +1,103 @@
+@@ -0,0 +1,105 @@
 +#include <stdio.h>
 +#include <time.h>
 +#include <utils/StrongPointer.h>
@@ -652,10 +706,11 @@ index 0000000..f935808
 +    printf("test-RefBaseDumpTunnel recLv recTimes testRnd testCntPerRnd\n");
 +    return 0;
 +}
-\ No newline at end of file
++
++
 diff --git a/libs/ui/mediatek/test/RefBaseDumpTunnel/RefBaseDumpTunnel.h b/libs/ui/mediatek/test/RefBaseDumpTunnel/RefBaseDumpTunnel.h
 new file mode 100644
-index 0000000..5ba0025
+index 000000000..5ba0025ef
 --- /dev/null
 +++ b/libs/ui/mediatek/test/RefBaseDumpTunnel/RefBaseDumpTunnel.h
 @@ -0,0 +1,17 @@
@@ -676,6 +731,8 @@ index 0000000..5ba0025
 +};
 +
 +};
+-- 
+2.11.0
 
 From 714226558635029ea8bf51258daf63cd0f3d7d18 Mon Sep 17 00:00:00 2001
 From: Wang Xuerui <idontknw.wang@gmail.com>
@@ -718,7 +775,7 @@ index 6c6230f9e..61728620e 100644
  
      SensorManager(const String16& opPackageName);
      status_t assertStateLocked();
-+
++    
 +#ifdef MTK_HARDWARE
 +    SensorManager();
 +#endif
@@ -729,7 +786,7 @@ index 6c6230f9e..61728620e 100644
      sp<IBinder::DeathRecipient> mDeathObserver;
      const String16 mOpPackageName;
  };
-+
++    
 +#ifdef MTK_HARDWARE
 +    // be compatible with MTK Lollipop blobs
 +    extern "C" {
@@ -779,3 +836,244 @@ index 225bfa885..c7f742220 100644
      SensorManager* sensorManager;
 -- 
 2.11.0
+
+From 491d1ef287f3047e0352f54c67387c7a3e2f663a Mon Sep 17 00:00:00 2001
+From: Wang Xuerui <idontknw.wang@gmail.com>
+Date: Sat, 2 Jul 2016 18:07:08 +0800
+Subject: [PATCH] DisplayUtils: fix MTK hwcomposer crashes on virtual display
+ usage
+
+Change-Id: I867adb9315f45795c3aeca2422c1cd8cc8b39133
+---
+ services/surfaceflinger/DisplayUtils.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/services/surfaceflinger/DisplayUtils.cpp b/services/surfaceflinger/DisplayUtils.cpp
+index 77821dd86..4040682e2 100644
+--- a/services/surfaceflinger/DisplayUtils.cpp
++++ b/services/surfaceflinger/DisplayUtils.cpp
+@@ -185,6 +185,11 @@ bool DisplayUtils::canAllocateHwcDisplayIdForVDS(int usage) {
+     char value[PROPERTY_VALUE_MAX];
+     property_get("debug.vds.allow_hwc", value, "0");
+     int allowHwcForVDS = atoi(value);
++    
++#ifdef MTK_HARDWARE
++    // xen0n: seems necessary for at least Meizu MX4's hwcomposer to not crash
++    flag_mask = 0;
++#endif
+ 
+ #if defined(QTI_BSP) && !defined(USE_HWC2)
+     // Do not allow hardware acceleration
+-- 
+2.11.0
+
+From 685cb460a265cafb1961ba17b44598a2c1da5ca4 Mon Sep 17 00:00:00 2001
+From: Adriano Martins <adrianomartins@gmail.com>
+Date: Tue, 13 Dec 2016 21:24:24 -0200
+Subject: [PATCH] Default to MTK
+
+Change-Id: I200c6c829139e31e7d3952a1a97f10b01ce6285e
+---
+ include/gui/SensorManager.h              |  8 -------
+ include/ui/Fence.h                       |  2 --
+ include/ui/GraphicBufferMapper.h         |  2 --
+ libs/gui/SensorManager.cpp               |  2 --
+ libs/ui/Android.mk                       |  4 ----
+ libs/ui/GraphicBufferMapper.cpp          | 38 +++++++++++++++-----------------
+ services/surfaceflinger/DisplayUtils.cpp |  2 --
+ 7 files changed, 18 insertions(+), 40 deletions(-)
+
+diff --git a/include/gui/SensorManager.h b/include/gui/SensorManager.h
+index 61728620e..469fc4f9e 100644
+--- a/include/gui/SensorManager.h
++++ b/include/gui/SensorManager.h
+@@ -57,12 +57,8 @@ public:
+     ssize_t getSensorList(Sensor const* const** list);
+     ssize_t getDynamicSensorList(Vector<Sensor>& list);
+     Sensor const* getDefaultSensor(int type);
+-#ifdef MTK_HARDWARE
+     sp<SensorEventQueue> createEventQueue(String8 packageName, int mode = 0);
+     sp<SensorEventQueue> createEventQueue();
+-#else
+-    sp<SensorEventQueue> createEventQueue(String8 packageName = String8(""), int mode = 0);
+-#endif
+     bool isDataInjectionEnabled();
+ 
+ private:
+@@ -72,9 +68,7 @@ private:
+     SensorManager(const String16& opPackageName);
+     status_t assertStateLocked();
+     
+-#ifdef MTK_HARDWARE
+     SensorManager();
+-#endif
+ 
+ private:
+     static Mutex sLock;
+@@ -88,13 +82,11 @@ private:
+     const String16 mOpPackageName;
+ };
+     
+-#ifdef MTK_HARDWARE
+     // be compatible with MTK Lollipop blobs
+     extern "C" {
+         extern android::Mutex _ZN7android9SingletonINS_13SensorManagerEE5sLockE;
+         extern SensorManager *_ZN7android9SingletonINS_13SensorManagerEE9sInstanceE;
+     }
+-#endif  // MTK_HARDWARE
+ 
+ // ----------------------------------------------------------------------------
+ }; // namespace android
+diff --git a/include/ui/Fence.h b/include/ui/Fence.h
+index befd64045..4615e336a 100644
+--- a/include/ui/Fence.h
++++ b/include/ui/Fence.h
+@@ -111,10 +111,8 @@ private:
+ 
+     int mFenceFd;
+ 
+-#ifdef MTK_HARDWARE
+ private:
+     void dump(int fd);
+-#endif
+ };
+ 
+ }; // namespace android
+diff --git a/include/ui/GraphicBufferMapper.h b/include/ui/GraphicBufferMapper.h
+index cf26f073a..d7702beed 100644
+--- a/include/ui/GraphicBufferMapper.h
++++ b/include/ui/GraphicBufferMapper.h
+@@ -73,14 +73,12 @@ private:
+     std::unique_ptr<Gralloc1::Device> mDevice;
+ };
+ 
+-#ifdef MTK_HARDWARE
+ extern "C" {
+ 
+     status_t _ZN7android19GraphicBufferMapper4lockEPK13native_handleiRKNS_4RectEPPv(
+             buffer_handle_t handle, int usage, const Rect& bounds, void** vaddr);
+ 
+ }
+-#endif
+ 
+ // ---------------------------------------------------------------------------
+ 
+diff --git a/libs/gui/SensorManager.cpp b/libs/gui/SensorManager.cpp
+index c7f742220..8cee3f9e4 100644
+--- a/libs/gui/SensorManager.cpp
++++ b/libs/gui/SensorManager.cpp
+@@ -39,7 +39,6 @@ namespace android {
+ android::Mutex android::SensorManager::sLock;
+ std::map<String16, SensorManager*> android::SensorManager::sPackageInstances;
+ 
+-#ifdef MTK_HARDWARE
+ 
+ static const String8 packageName8("");
+ 
+@@ -63,7 +62,6 @@ SensorManager::SensorManager()
+ sp<SensorEventQueue> SensorManager::createEventQueue() {
+ 	return createEventQueue(packageName8, 0);
+ }
+-#endif  // MTK_HARDWARE
+ 
+ SensorManager& SensorManager::getInstanceForPackage(const String16& packageName) {
+     Mutex::Autolock _l(sLock);
+diff --git a/libs/ui/Android.mk b/libs/ui/Android.mk
+index fc8460f86..488adb61b 100644
+--- a/libs/ui/Android.mk
++++ b/libs/ui/Android.mk
+@@ -48,7 +48,6 @@ LOCAL_SRC_FILES := \
+ 	Region.cpp \
+ 	UiConfig.cpp
+ 
+-ifeq ($(BOARD_HAS_MTK_HARDWARE),true)
+ LOCAL_SRC_FILES += \
+ 	mediatek/Fence.cpp \
+ 	mediatek/IDumpTunnel.cpp \
+@@ -56,7 +55,6 @@ LOCAL_SRC_FILES += \
+ 
+ # just make everything compile for now... cleanups later
+ LOCAL_CPPFLAGS := -std=c++1y -Weverything
+-endif
+ 
+ LOCAL_SHARED_LIBRARIES := \
+ 	libbinder \
+@@ -66,10 +64,8 @@ LOCAL_SHARED_LIBRARIES := \
+ 	libutils \
+ 	liblog
+ 
+-ifeq ($(BOARD_HAS_MTK_HARDWARE),true)
+ LOCAL_SHARED_LIBRARIES += \
+ 	libbinder
+-endif
+ 
+ ifneq ($(BOARD_FRAMEBUFFER_FORCE_FORMAT),)
+ LOCAL_CFLAGS += -DFRAMEBUFFER_FORCE_FORMAT=$(BOARD_FRAMEBUFFER_FORCE_FORMAT)
+diff --git a/libs/ui/GraphicBufferMapper.cpp b/libs/ui/GraphicBufferMapper.cpp
+index 2fc831908..ec27a7808 100644
+--- a/libs/ui/GraphicBufferMapper.cpp
++++ b/libs/ui/GraphicBufferMapper.cpp
+@@ -91,27 +91,25 @@ static inline gralloc1_rect_t asGralloc1Rect(const Rect& rect) {
+     return outRect;
+ }
+     
+-#ifdef MTK_HARDWARE
+-    extern "C" {
+-        
+-        extern status_t _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPv(buffer_handle_t, uint32_t, const Rect&, void**);
+-        extern status_t _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handlejRKNS_4RectEP13android_ycbcr(buffer_handle_t, uint32_t, const Rect&, android_ycbcr *);
+-        
+-        
+-        status_t _ZN7android19GraphicBufferMapper4lockEPK13native_handleiRKNS_4RectEPPv(buffer_handle_t handle,
+-                                                                                        int usage, const Rect& bounds, void** vaddr)
+-        {
+-            return _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPv(handle, static_cast<uint32_t>(usage), bounds, vaddr);
+-        }
+-        
+-        
+-        status_t _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handleiRKNS_4RectEP13android_ycbcr(buffer_handle_t handle,
+-                                                                                                          int usage, const Rect& bounds, android_ycbcr *ycbcr)
+-        {
+-            return _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handlejRKNS_4RectEP13android_ycbcr(handle, static_cast<uint32_t>(usage), bounds, ycbcr);
+-        }
++extern "C" {
++    
++    extern status_t _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPv(buffer_handle_t, uint32_t, const Rect&, void**);
++    extern status_t _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handlejRKNS_4RectEP13android_ycbcr(buffer_handle_t, uint32_t, const Rect&, android_ycbcr *);
++    
++    
++    status_t _ZN7android19GraphicBufferMapper4lockEPK13native_handleiRKNS_4RectEPPv(buffer_handle_t handle,
++                                                                                    int usage, const Rect& bounds, void** vaddr)
++    {
++        return _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPv(handle, static_cast<uint32_t>(usage), bounds, vaddr);
+     }
+-#endif
++    
++    
++    status_t _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handleiRKNS_4RectEP13android_ycbcr(buffer_handle_t handle,
++                                                                                                      int usage, const Rect& bounds, android_ycbcr *ycbcr)
++    {
++        return _ZN7android19GraphicBufferMapper9lockYCbCrEPK13native_handlejRKNS_4RectEP13android_ycbcr(handle, static_cast<uint32_t>(usage), bounds, ycbcr);
++    }
++}
+ 
+ status_t GraphicBufferMapper::lock(buffer_handle_t handle, uint32_t usage,
+         const Rect& bounds, void** vaddr)
+diff --git a/services/surfaceflinger/DisplayUtils.cpp b/services/surfaceflinger/DisplayUtils.cpp
+index 4040682e2..8c00aa3ea 100644
+--- a/services/surfaceflinger/DisplayUtils.cpp
++++ b/services/surfaceflinger/DisplayUtils.cpp
+@@ -186,10 +186,8 @@ bool DisplayUtils::canAllocateHwcDisplayIdForVDS(int usage) {
+     property_get("debug.vds.allow_hwc", value, "0");
+     int allowHwcForVDS = atoi(value);
+     
+-#ifdef MTK_HARDWARE
+     // xen0n: seems necessary for at least Meizu MX4's hwcomposer to not crash
+     flag_mask = 0;
+-#endif
+ 
+ #if defined(QTI_BSP) && !defined(USE_HWC2)
+     // Do not allow hardware acceleration
+-- 
+2.11.0
+
