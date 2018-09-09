@@ -92,7 +92,7 @@ TARGET_HAS_LEGACY_LP_CAM := true
 TARGET_CAMERASERVICE_CLOSES_NATIVE_HANDLES := true
 
 # Fix video autoscaling on old OMX decoders
-TARGET_OMX_LEGACY_RESCALING:= true
+#TARGET_OMX_LEGACY_RESCALING:= true
 
 # Device specific props
 TARGET_SYSTEM_PROP := $(LOCAL_PATH)/system.prop
