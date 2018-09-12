@@ -60,9 +60,7 @@ PRODUCT_PACKAGES += libmockdrmcryptoplugin
 # FM Radio
 PRODUCT_PACKAGES += \
 	FMRadio \
-	libfmjni \
-	libfmcust \
-	libfmmt6630
+	libfmcust
 	
 # Audio
 PRODUCT_PACKAGES += \
