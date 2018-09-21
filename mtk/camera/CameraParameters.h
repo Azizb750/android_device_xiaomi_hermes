@@ -592,8 +592,6 @@ public:
     // Constant emission of light during preview, auto-focus and snapshot.
     // This can also be used for video recording.
     static const char FLASH_MODE_TORCH[];
-    static const char FLASH_MODE_TORCH1[];
-    static const char FLASH_MODE_TORCH2[];
 
     // Values for scene mode settings.
     static const char SCENE_MODE_AUTO[];
