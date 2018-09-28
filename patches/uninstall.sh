@@ -1,6 +1,6 @@
 #!/bin/sh
 rootdirectory="$PWD"
-dirs="bionic frameworks/av frameworks/native hardware/libhardware system/core system/netd"
+dirs="bionic frameworks/av frameworks/native hardware/libhardware system/core system/netd packages/apps/FMRadio"
 
 for dir in $dirs ; do
 	cd $rootdirectory

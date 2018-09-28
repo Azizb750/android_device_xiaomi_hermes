@@ -69,6 +69,8 @@ on post-fs
     mkdir /dev/block/platform/mtk-msdc.0/by-name 0755 root system
     symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/nvram /dev/block/platform/mtk-msdc.0/by-name/nvram
     symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/proinfo /dev/block/platform/mtk-msdc.0/by-name/proinfo
+    symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/secro /dev/block/platform/mtk-msdc.0/by-name/secro
+    symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/otp /dev/block/platform/mtk-msdc.0/by-name/otp
 
     # Wi-Fi
     chmod 0666 /dev/wmtWifi
