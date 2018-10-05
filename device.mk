@@ -70,6 +70,10 @@ PRODUCT_PACKAGES += \
     libtinycompress \
     libtinyxml
 
+# Camera
+PRODUCT_PACKAGES += \
+    Snap
+
 # Stlport
 PRODUCT_COPY_FILES += \
     prebuilts/ndk/current/sources/cxx-stl/stlport/libs/armeabi-v7a/libstlport_shared.so:system/lib/libstlport.so \
