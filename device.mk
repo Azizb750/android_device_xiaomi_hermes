@@ -21,9 +21,6 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 # Recovery allowed devices
 TARGET_OTA_ASSERT_DEVICE := hermes
 
-# Compile apps
-PRODUCT_PACKAGES += Snap
-
 # Shim symbols
 PRODUCT_PACKAGES += \
     libshim_c \
