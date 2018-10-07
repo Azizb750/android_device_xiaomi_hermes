@@ -1,0 +1,10 @@
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_MODULE := libmtkjpeg
+LOCAL_SRC_FILES_64 := libmtkjpeg.so
+LOCAL_SRC_FILES_32 := arm/libmtkjpeg.so
+LOCAL_SHARED_LIBRARIES := libstdc++
+LOCAL_MULTILIB := both
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_SUFFIX := .so
+include $(BUILD_PREBUILT)

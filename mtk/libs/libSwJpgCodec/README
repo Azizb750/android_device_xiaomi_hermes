@@ -1,0 +1,27 @@
+Library of MTK JPEG Decode feature.
+
+This library is pre-built by MediaTek internal.
+
+WHAT IT DOES?
+=============
+libSwJpgCodec.so Implements the MTK SW JPEG Decoder to do the SW JPEG Decode tasks.
+
+HOW IT WAS BUILT?
+==================
+It needs the following library from AOSP:
+1.  liblog.so
+2.  libutils.so
+3.  libcutils.so
+
+and the following libs from MediaTek:
+1.  libmtkjpeg.so
+
+All source/dependency modules of this module are already put in
+'vendor/mediatek/libs' folder.
+
+HOW TO USE IT?
+==============
+Provide api for JPEG Decode feature called from libJpgDecPipe.
+all api interfaces are at (vendor\mediatek\proprietary\protect-bsp\platform\mt6735\hardware\jpeg\inc)
+
+All the source code of this library were written by MediaTek co..

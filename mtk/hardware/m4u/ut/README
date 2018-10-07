@@ -1,0 +1,22 @@
+MTK M4U driver UT code.
+
+WHAT IT DOES?
+=============
+MTK M4U driver UT code.
+
+HOW IT WAS BUILT?
+==================
+It needs the following library from AOSP:
+1.  libcutils.so
+2.  liblog.so
+3.  libion.so
+
+and the following libs from MediaTek:
+1.  libm4u.so
+2.  libion_mtk.so
+
+HOW TO USE IT?
+==============
+MTK M4U driver UT code.
+
+All the source code of this library were written by MediaTek co..

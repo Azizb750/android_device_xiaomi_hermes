@@ -1,0 +1,16 @@
+WHAT IT DOES?
+=============
+libpq_prot.so is the core library of MediaTek PQ implementation.
+
+HOW IT WAS BUILT?
+==================
+It needs the following library from AOSP:
+1.  libutils.so
+2.  libcutils.so
+3.  libdl.so
+
+HOW TO USE IT?
+==============
+Will be linked with the pq executable and any other modules need to
+control PQ.
+
