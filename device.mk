@@ -168,41 +168,41 @@ PRODUCT_PROPERTY_OVERRIDES += \
 #    android.hardware.drm@1.0-impl
 
 # GPS HAL
-PRODUCT_PACKAGES += \
-    android.hardware.gnss@1.0-impl
+#PRODUCT_PACKAGES += \
+#    android.hardware.gnss@1.0-impl
 
 # Lights HAL
-PRODUCT_PACKAGES += \
-    android.hardware.light@2.0-impl
+#PRODUCT_PACKAGES += \
+#    android.hardware.light@2.0-impl
 
 # Power HAL
-PRODUCT_PACKAGES += \
-    android.hardware.power@1.0-impl \
-    android.hardware.power@1.0-service
+#PRODUCT_PACKAGES += \
+#    android.hardware.power@1.0-impl \
+#    android.hardware.power@1.0-service
 
 # Sensor HAL
-PRODUCT_PACKAGES += \
-    android.hardware.sensors@1.0-impl
+#PRODUCT_PACKAGES += \
+#    android.hardware.sensors@1.0-impl
 
 
 # Vibrator HAL
-PRODUCT_PACKAGES += \
-    android.hardware.vibrator@1.0-impl
+#PRODUCT_PACKAGES += \
+#    android.hardware.vibrator@1.0-impl
 
 
 # WiFi HAL
-PRODUCT_PACKAGES += \
-	android.hardware.wifi@1.0-service
+#PRODUCT_PACKAGES += \
+#	android.hardware.wifi@1.0-service
 
 # Audio HAL
-PRODUCT_PACKAGES += \
-    android.hardware.audio@2.0-impl \
-    android.hardware.audio@2.0-service \
-    android.hardware.audio.effect@2.0-impl \
-    android.hardware.broadcastradio@1.0-impl \
-	android.hardware.soundtrigger@2.0-impl
+#PRODUCT_PACKAGES += \
+#    android.hardware.audio@2.0-impl \
+#    android.hardware.audio@2.0-service \
+#    android.hardware.audio.effect@2.0-impl \
+#    android.hardware.broadcastradio@1.0-impl \
+#	android.hardware.soundtrigger@2.0-impl
 
 # Bluetooth HAL
-PRODUCT_PACKAGES += \
-    android.hardware.bluetooth@1.0-impl \
-	android.hardware.bluetooth@1.0-service \
+#PRODUCT_PACKAGES += \
+#    android.hardware.bluetooth@1.0-impl \
+#	android.hardware.bluetooth@1.0-service \
