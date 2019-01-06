@@ -1,6 +1,6 @@
 #!/bin/sh
 rootdirectory="$PWD"
-dirs="frameworks/av frameworks/opt/telephony system/core hardware/interfaces hardware/libhardware"
+dirs="bionic frameworks/av frameworks/opt/telephony system/core hardware/interfaces hardware/libhardware"
 
 for dir in $dirs ; do
 	cd $rootdirectory
