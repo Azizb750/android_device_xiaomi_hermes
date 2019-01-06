@@ -1,0 +1,40 @@
+From 6d05ca0682f4ffe461e30c1d7bf388c55a13da77 Mon Sep 17 00:00:00 2001
+From: vishalk17 <vishalkapadi95@gmail.com>
+Date: Tue, 14 Aug 2018 21:08:32 +0000
+Subject: [PATCH] defined legacy_audio_stream_in_t
+
+this is necessary to adapt daniel's libaudiohal:LEGACY_MTK_AV_BLOB support patch.
+
+require commits:
+
+1. https://github.com/vishalk95/android_frameworks_av_mtk/commit/54b3086e29b56417614377b07d5421010bc42c2a
+
+Signed-off by: vishalk17 <vishalkapadi95@gmail.com>
+
+Change-Id: Ia3270c0f5efb7f1091c55664eb18fdd8147f3289
+---
+ include/hardware/audio.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/include/hardware/audio.h b/include/hardware/audio.h
+index 10a8789a..603b91f0 100644
+--- a/include/hardware/audio.h
++++ b/include/hardware/audio.h
+@@ -558,6 +558,15 @@ struct audio_stream_in {
+ };
+ typedef struct audio_stream_in audio_stream_in_t;
+ 
++struct legacy_audio_stream_in {
++    struct audio_stream common;
++    int (*set_gain)(struct audio_stream_in *stream, float gain);
++    ssize_t (*read)(struct audio_stream_in *stream, void* buffer,
++                    size_t bytes);
++    uint32_t (*get_input_frames_lost)(struct audio_stream_in *stream);
++};
++typedef struct legacy_audio_stream_in legacy_audio_stream_in_t;
++
+ /**
+  * return the frame size (number of bytes per sample).
+  *
+--
+1.9.1

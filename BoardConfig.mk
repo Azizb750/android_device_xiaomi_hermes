@@ -20,6 +20,7 @@ TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a53
 
 # Kernel
+TARGET_KMODULES := true
 TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel
 BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive
 BOARD_MKBOOTIMG_ARGS := \
@@ -30,6 +31,11 @@ BOARD_MKBOOTIMG_ARGS := \
     --ramdisk_offset 0x03f88000 \
     --second_offset 0x00e88000 \
     --tags_offset 0x0df88000
+
+TARGET_KERNEL_SOURCE := kernel/xiaomi/hermes
+TARGET_KERNEL_CONFIG := hermes_defconfig
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
+BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 
 # Partitons
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 12737576960
@@ -49,6 +55,13 @@ BOARD_CONNECTIVITY_VENDOR := MediaTek
 SUPPRESS_MTK_AUDIO_BLOB_ERR_MSG := true
 BOARD_GLOBAL_CFLAGS += -DMTK_HARDWARE
 BOARD_GLOBAL_CFLAGS += -DLEGACY_MTK_AV_BLOB
+MTK_HARDWARE := true
+
+# Initial API Level of the Device
+PRODUCT_SHIPPING_API_LEVEL := 21
+
+#Software gatekeeper
+BOARD_USE_SOFT_GATEKEEPER := true
 
 # Display
 BOARD_EGL_CFG := $(LOCAL_PATH)/configs/egl.cfg
@@ -82,6 +95,7 @@ TARGET_SPECIFIC_CAMERA_PARAMETER_LIBRARY := libcamera_parameters_mtk
 TARGET_CAMERASERVICE_CLOSES_NATIVE_HANDLES := true
 TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
 TARGET_HAS_LEGACY_CAMERA_HAL1 := true
+BOARD_GLOBAL_CFLAGS += -DCAMERA_VENDOR_L_COMPAT
 TARGET_USES_NON_TREBLE_CAMERA := true
 
 # Low-ram
@@ -118,9 +132,6 @@ TARGET_DOES_NOT_SUPPORT_SECCOMP := true
 # Sepolicy
 BOARD_SEPOLICY_DIRS += device/xiaomi/hermes/sepolicy
 #BOARD_SEPOLICY_VERS := 28.0
-
-# HIDL Manifest
-DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/configs/manifest.xml
 
 # Build kernel without kernel sources
 $(shell mkdir -p $(OUT)/obj/KERNEL_OBJ/usr)

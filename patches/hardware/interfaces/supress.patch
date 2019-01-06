@@ -1,0 +1,48 @@
+From e99f84841a1715159a7d7c4ce492fab54849ae6d Mon Sep 17 00:00:00 2001
+From: danielhk <daniel.p6800@gmail.com>
+Date: Sun, 3 Dec 2017 21:39:24 +0800
+Subject: [PATCH] Add error message suppress option
+
+Suppress the error message "E AudioALSAStreamOut:
+-getPresentationPosition(), no playback handler, *frames = 0, return"
+This is not really an error but repeated endlessly all the time.
+
+Change-Id: I38157cc2b506dbc533f5ec0c8c75bf4aec177dcb
+---
+ audio/common/all-versions/default/service/Android.mk      | 8 ++++++++
+ .../include/core/all-versions/default/StreamOut.impl.h    | 3 +++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/audio/common/all-versions/default/service/Android.mk b/audio/common/all-versions/default/service/Android.mk
+index 43d7fe19..0225af02 100644
+--- a/audio/common/all-versions/default/service/Android.mk
++++ b/audio/common/all-versions/default/service/Android.mk
+@@ -55,4 +55,12 @@ else
+ LOCAL_MULTILIB := $(AUDIOSERVER_MULTILIB)
+ endif
+ 
++ifeq ($(TARGET_USES_BCRADIO_FUTURE_FEATURES),true)
++LOCAL_CFLAGS += -DTARGET_USES_BCRADIO_FUTURE_FEATURES
++endif
++
++ifeq ($(SUPPRESS_MTK_AUDIO_BLOB_ERR_MSG),true)
++LOCAL_CFLAGS += -DSUPPRESS_MTK_AUDIO_BLOB_ERR_MSG
++endif
++
+ include $(BUILD_EXECUTABLE)
+diff --git a/audio/core/all-versions/default/include/core/all-versions/default/StreamOut.impl.h b/audio/core/all-versions/default/include/core/all-versions/default/StreamOut.impl.h
+index 6fb157f7..74344406 100644
+--- a/audio/core/all-versions/default/include/core/all-versions/default/StreamOut.impl.h
++++ b/audio/core/all-versions/default/include/core/all-versions/default/StreamOut.impl.h
+@@ -504,6 +504,9 @@ Result StreamOut::getPresentationPositionImpl(audio_stream_out_t* stream, uint64
+     // continuously querying it, but the stream has been stopped.
+     static const std::vector<int> ignoredErrors{EINVAL, EAGAIN, ENODATA};
+     Result retval(Result::NOT_SUPPORTED);
++#ifdef SUPPRESS_MTK_AUDIO_BLOB_ERR_MSG
++    if (true) return retval;
++#endif
+     if (stream->get_presentation_position == NULL) return retval;
+     struct timespec halTimeStamp;
+     retval = Stream::analyzeStatus("get_presentation_position",
+--
+1.9.1

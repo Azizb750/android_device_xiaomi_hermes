@@ -1,0 +1,39 @@
+From 29c200b6076901fd5181ec29d574515d77d2751e Mon Sep 17 00:00:00 2001
+From: danielhk <daniel.p6800@gmail.com>
+Date: Sat, 16 Dec 2017 19:42:51 +0800
+Subject: [PATCH] Build flag misplaced
+
+Build flag SUPPRESS_MTK_AUDIO_BLOB_ERR_MSG is for the shared library not
+service.
+
+Change-Id: I6364f57a205fab8aec1e25ed1e43870577388b60
+---
+ audio/common/all-versions/default/service/Android.mk | 4 ----
+ audio/core/2.0/default/Android.bp                    | 1 +
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/audio/common/all-versions/default/service/Android.mk b/audio/common/all-versions/default/service/Android.mk
+index 0225af02..c38fbb0a 100644
+--- a/audio/common/all-versions/default/service/Android.mk
++++ b/audio/common/all-versions/default/service/Android.mk
+@@ -59,8 +59,4 @@ ifeq ($(TARGET_USES_BCRADIO_FUTURE_FEATURES),true)
+ LOCAL_CFLAGS += -DTARGET_USES_BCRADIO_FUTURE_FEATURES
+ endif
+ 
+-ifeq ($(SUPPRESS_MTK_AUDIO_BLOB_ERR_MSG),true)
+-LOCAL_CFLAGS += -DSUPPRESS_MTK_AUDIO_BLOB_ERR_MSG
+-endif
+-
+ include $(BUILD_EXECUTABLE)
+diff --git a/audio/core/2.0/default/Android.bp b/audio/core/2.0/default/Android.bp
+index 625df74a..d3dc91fa 100644
+--- a/audio/core/2.0/default/Android.bp
++++ b/audio/core/2.0/default/Android.bp
+@@ -16,6 +16,7 @@ cc_library_shared {
+ 
+     cflags: [
+         "-DAUDIO_HAL_VERSION_2_0",
++        "-DSUPPRESS_MTK_AUDIO_BLOB_ERR_MSG"
+     ],
+ 
+     defaults: ["hidl_defaults"],
