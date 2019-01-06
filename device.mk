@@ -156,8 +156,53 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml
 
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
-     persist.sys.timezone=Europe/Moscow
+     persist.sys.timezone=Europe/Athens
 
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.call_recording.enabled=true \
+    persist.media.treble_omx=false \
     persist.call_recording.src=4
+
+# DRM HAL
+#PRODUCT_PACKAGES += \
+#    android.hardware.drm@1.0-impl
+
+# GPS HAL
+PRODUCT_PACKAGES += \
+    android.hardware.gnss@1.0-impl
+
+# Lights HAL
+PRODUCT_PACKAGES += \
+    android.hardware.light@2.0-impl
+
+# Power HAL
+PRODUCT_PACKAGES += \
+    android.hardware.power@1.0-impl \
+    android.hardware.power@1.0-service
+
+# Sensor HAL
+PRODUCT_PACKAGES += \
+    android.hardware.sensors@1.0-impl
+
+
+# Vibrator HAL
+PRODUCT_PACKAGES += \
+    android.hardware.vibrator@1.0-impl
+
+
+# WiFi HAL
+PRODUCT_PACKAGES += \
+	android.hardware.wifi@1.0-service
+
+# Audio HAL
+PRODUCT_PACKAGES += \
+    android.hardware.audio@2.0-impl \
+    android.hardware.audio@2.0-service \
+    android.hardware.audio.effect@2.0-impl \
+    android.hardware.broadcastradio@1.0-impl \
+	android.hardware.soundtrigger@2.0-impl
+
+# Bluetooth HAL
+PRODUCT_PACKAGES += \
+    android.hardware.bluetooth@1.0-impl \
+	android.hardware.bluetooth@1.0-service \
