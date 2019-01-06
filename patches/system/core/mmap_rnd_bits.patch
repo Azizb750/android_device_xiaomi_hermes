@@ -1,0 +1,25 @@
+From 070359fcbf0ef586fa832246edf4ae361d63415a Mon Sep 17 00:00:00 2001
+From: Dinolek <dinolek@o2.pl>
+Date: Wed, 15 Aug 2018 10:56:37 +0200
+Subject: [PATCH] hack to boot without mmap_rnd_bits support
+
+---
+ init/init.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/init/init.cpp b/init/init.cpp
+index 1a5276b..1ba15f9 100644
+--- a/init/init.cpp
++++ b/init/init.cpp
+@@ -344,7 +344,7 @@ static int set_mmap_rnd_bits_action(const std::vector<std::string>& args)
+ #endif
+     if (ret == -1) {
+         ERROR("Unable to set adequate mmap entropy value!\n");
+-        security_failure();
++        ret = 0;
+     }
+     return ret;
+ }
+-- 
+2.7.4
+
