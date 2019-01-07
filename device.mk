@@ -73,11 +73,6 @@ PRODUCT_PACKAGES += \
     libtinycompress \
     libtinyxml
 
-# Stlport
-PRODUCT_COPY_FILES += \
-    prebuilts/ndk/current/sources/cxx-stl/stlport/libs/armeabi-v7a/libstlport_shared.so:system/lib/libstlport.so \
-    prebuilts/ndk/current/sources/cxx-stl/stlport/libs/arm64-v8a/libstlport_shared.so:system/lib64/libstlport.so
-
 # Rootdir
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/fstab.mt6795:root/fstab.mt6795 \
@@ -165,8 +160,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
  # Seccomp policy
 PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/seccomp/mediacodec.policy:system/vendor/etc/seccomp_policy/mediacodec.policy \
-	$(DEVICE_PATH)/seccomp/mediaextractor.policy:system/vendor/etc/seccomp_policy/mediaextractor.policy
+	$(LOCAL_PATH)/seccomp/mediacodec.policy:system/vendor/etc/seccomp_policy/mediacodec.policy \
+	$(LOCAL_PATH)/seccomp/mediaextractor.policy:system/vendor/etc/seccomp_policy/mediaextractor.policy
 
 # DRM HAL
 #PRODUCT_PACKAGES += \
