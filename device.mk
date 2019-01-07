@@ -50,7 +50,7 @@ PRODUCT_PACKAGES += \
     libion
 
 # Doze
-PRODUCT_PACKAGES += XiaomiDoze
+#PRODUCT_PACKAGES += XiaomiDoze
 
 # GPS
 PRODUCT_PACKAGES += libcurl
@@ -162,6 +162,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.call_recording.enabled=true \
     persist.media.treble_omx=false \
     persist.call_recording.src=4
+
+ # Seccomp policy
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/seccomp/mediacodec.policy:system/vendor/etc/seccomp_policy/mediacodec.policy \
+	$(DEVICE_PATH)/seccomp/mediaextractor.policy:system/vendor/etc/seccomp_policy/mediaextractor.policy
 
 # DRM HAL
 #PRODUCT_PACKAGES += \
