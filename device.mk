@@ -26,13 +26,7 @@ PRODUCT_PACKAGES += Snap
 
 # Shim symbols
 PRODUCT_PACKAGES += \
-    libshim_c \
-    libshim_media \
-    libshim_stagefright \
-    libshim_ui \
-    libshim_wvm \
-    libshim_xlog \
-    libshim_netutils
+    libmtk_symbols
 
 # Power HAL
 PRODUCT_PACKAGES += power.mt6795
@@ -163,46 +157,127 @@ PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/seccomp_policy/mediacodec.policy:system/vendor/etc/seccomp_policy/mediacodec.policy \
 	$(LOCAL_PATH)/seccomp_policy/mediaextractor.policy:system/vendor/etc/seccomp_policy/mediaextractor.policy
 
-# DRM HAL
-#PRODUCT_PACKAGES += \
-#    android.hardware.drm@1.0-impl
+#Audio HIDL
+PRODUCT_PACKAGES += \
+    android.hardware.audio@2.0-impl \
+    android.hardware.audio@2.0-service \
+    android.hardware.audio.effect@2.0-impl \
+    android.hardware.broadcastradio@1.1-impl
+#    android.hardware.soundtrigger@2.0-impl
 
-# GPS HAL
+# Camera HAL
+#PRODUCT_PACKAGES += \
+#    camera.device@1.0-impl \
+#    camera.device@3.2-impl \
+#    android.hardware.camera.provider@2.4-impl \
+#    android.hardware.camera.provider@2.4-service
+
+# ConfigStore HAL
+PRODUCT_PACKAGES += \
+    android.hardware.configstore@1.0-impl \
+    android.hardware.configstore@1.0-service
+
+#gralloc/graphics HAL/HW Composer
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.allocator@2.0-impl \
+    android.hardware.graphics.allocator@2.0-service \
+    android.hardware.graphics.composer@2.1-impl \
+    android.hardware.graphics.mapper@2.0-impl \
+    android.hardware.renderscript@1.0-impl
+
+# Drm
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.0-impl
+
+#gralloc/graphics HAL/HW Composer
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.allocator@2.0-impl \
+    android.hardware.graphics.allocator@2.0-service \
+    android.hardware.graphics.composer@2.1-impl \
+    android.hardware.graphics.mapper@2.0-impl \
+    android.hardware.renderscript@1.0-impl
+
+# Health
+PRODUCT_PACKAGES += \
+    android.hardware.health@1.0-impl \
+    android.hardware.health@1.0-service
+
+# IR HAL
+PRODUCT_PACKAGES += \
+    android.hardware.ir@1.0
+
+# Keymaster HIDL
+PRODUCT_PACKAGES += \
+    android.hardware.keymaster@3.0-impl
+#    android.hardware.keymaster@3.0-service
+
+# Lights
+PRODUCT_PACKAGES += \
+    android.hardware.light@2.0-impl \
+    android.hardware.light@2.0-service
+
+# OMX
+PRODUCT_PACKAGES += \
+    android.hardware.media.omx@1.0
+
+#memtrack
+PRODUCT_PACKAGES += \
+    android.hardware.memtrack@1.0-impl \
+    android.hardware.memtrack@1.0-service
+
+# Bluetooth HAL
+PRODUCT_PACKAGES += \
+    android.hardware.bluetooth@1.0-impl \
+    android.hardware.bluetooth@1.0-service
+
+# Power
+PRODUCT_PACKAGES += \
+    android.hardware.power@1.1-impl
+
+# Ril
+PRODUCT_PACKAGES += \
+    android.hardware.radio@1.1 \
+    android.hardware.radio.deprecated@1.0 \
+    android.hardware.broadcastradio@1.0
+
+# Sensors
+PRODUCT_PACKAGES += \
+    android.hardware.sensors@1.0-impl \
+    android.hardware.sensors@1.0-service
+
+#USB HAL
+PRODUCT_PACKAGES += \
+    android.hardware.usb@1.0-service
+
+# Gatekeeper HIDL
+PRODUCT_PACKAGES += \
+    android.hardware.gatekeeper@1.0-impl
+#    android.hardware.gatekeeper@1.0-service
+
+# Vibrator
+PRODUCT_PACKAGES += \
+    android.hardware.vibrator@1.1-impl \
+    android.hardware.vibrator@1.1-service
+
+# Wifi
+PRODUCT_PACKAGES += \
+    android.hardware.wifi@1.0-service \
+    android.hardware.wifi.offload@1.0 \
+    android.hardware.wifi.supplicant@1.0
+
+# Sensors
+PRODUCT_PACKAGES += \
+    android.hardware.sensors@1.0-impl \
+    android.hardware.sensors@1.0-service
+
+#GNSS HAL
 #PRODUCT_PACKAGES += \
 #    android.hardware.gnss@1.0-impl
 
-# Lights HAL
+# GPS force mode
+#PRODUCT_PROPERTY_OVERRIDES += \
+#    persist.force.gps.mode=gnss
+
 #PRODUCT_PACKAGES += \
-#    android.hardware.light@2.0-impl
-
-# Power HAL
-#PRODUCT_PACKAGES += \
-#    android.hardware.power@1.0-impl \
-#    android.hardware.power@1.0-service
-
-# Sensor HAL
-#PRODUCT_PACKAGES += \
-#    android.hardware.sensors@1.0-impl
-
-
-# Vibrator HAL
-#PRODUCT_PACKAGES += \
-#    android.hardware.vibrator@1.0-impl
-
-
-# WiFi HAL
-#PRODUCT_PACKAGES += \
-#	android.hardware.wifi@1.0-service
-
-# Audio HAL
-#PRODUCT_PACKAGES += \
-#    android.hardware.audio@2.0-impl \
-#    android.hardware.audio@2.0-service \
-#    android.hardware.audio.effect@2.0-impl \
-#    android.hardware.broadcastradio@1.0-impl \
-#	android.hardware.soundtrigger@2.0-impl
-
-# Bluetooth HAL
-#PRODUCT_PACKAGES += \
-#    android.hardware.bluetooth@1.0-impl \
-#	android.hardware.bluetooth@1.0-service \
+#    android.hardware.tetheroffload.config@1.0 \
+#    android.hardware.tetheroffload.control@1.0

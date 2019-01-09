@@ -3,38 +3,10 @@ import init.mt6795.usb.rc
 on early-init
     mount debugfs /sys/kernel/debug /sys/kernel/debug mode=755
 
-    # Turn off backlight on blank
-    write /sys/class/leds/lcd-backlight/trigger "backlight"
-
 on init
-    # Shim libs
-    export LD_SHIM_LIBS \
-        "/system/lib/libc.so|libshim_c.so: \
-        /system/lib64/libc.so|libshim_c.so: \
-        /system/lib/libmedia.so|libshim_media.so: \
-        /system/lib64/libmedia.so|libshim_media.so: \
-        /system/lib/libstagefright.so|libshim_stagefright.so: \
-        /system/lib64/libstagefright.so|libshim_stagefright.so: \
-        /system/lib/liblog.so|libshim_xlog.so: \
-        /system/lib64/liblog.so|libshim_xlog.so: \
-        /system/lib/libnetutils.so|libshim_netutils.so: \
-        /system/lib64/libnetutils.so|libshim_netutils.so"
-
     # Protect
     mkdir /protect_f 0771 system system
     mkdir /protect_s 0771 system system
-
-    # Kernel logs
-    chown root system /dev/kmsg
-    chmod 0660 /dev/kmsg
-
-    # OTG
-    mkdir /mnt/media_rw/usbotg 0700 media_rw media_rw
-    mkdir /storage/usbotg 0700 root root
-
-    # RIL
-    chown root system /proc/lk_env
-    chmod 0660 /proc/lk_env
 
 on fs
     mount_all /fstab.mt6795
@@ -57,20 +29,12 @@ on post-fs
     chown system system /protect_s
     chmod 0770 /protect_s
 
-    # Workaround for old nvram and ril blobs
-    mkdir /dev/block/platform/mtk-msdc.0/by-name 0755 root system
-    symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/nvram /dev/block/platform/mtk-msdc.0/by-name/nvram
-    symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/proinfo /dev/block/platform/mtk-msdc.0/by-name/proinfo
-    symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/secro /dev/block/platform/mtk-msdc.0/by-name/secro
-    symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/otp /dev/block/platform/mtk-msdc.0/by-name/otp
-
-    # Boot info
-    chown system system /proc/bootprof
+    # Workaround for old blobs
+    symlink /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name /dev/block/platform/mtk-msdc.0/by-name
 
 on post-fs-data
     # Create nvram folder for modem
     mkdir /data/nvram 0771 root system
-    mkdir /data/nvram/media 0771 media audio
 
     # Create for muxd pts device node to operate without root
     mkdir /dev/radio 0770 radio radio
@@ -78,6 +42,7 @@ on post-fs-data
     # GPS
     mkdir /data/gps_mnl 0771 gps system
     mkdir /data/misc/gps 0770 gps gps
+    mkdir /data/agps_supl 0771 gps system
     chown gps gps /sys/class/gpsdrv/gps/pwrctl
     chown gps gps /sys/class/gpsdrv/gps/suspend
     chown gps gps /sys/class/gpsdrv/gps/state
@@ -113,6 +78,23 @@ on post-fs-data
     chown system system /sys/class/misc/m_acc_misc/accdelay
     chown system system /sys/class/misc/m_acc_misc/accbatch
     chown system system /sys/class/misc/m_acc_misc/accflush
+
+    chmod 0660 /sys/class/misc/m_alsps_misc/alsactive
+    chmod 0660 /sys/class/misc/m_alsps_misc/alsdelay
+    chmod 0660 /sys/class/misc/m_alsps_misc/alsbatch
+    chmod 0660 /sys/class/misc/m_alsps_misc/alsflush
+    chmod 0660 /sys/class/misc/m_alsps_misc/psactive
+    chmod 0660 /sys/class/misc/m_alsps_misc/psdelay
+    chmod 0660 /sys/class/misc/m_alsps_misc/psbatch
+    chmod 0660 /sys/class/misc/m_alsps_misc/psflush
+    chown system system /sys/class/misc/m_alsps_misc/alsactive
+    chown system system /sys/class/misc/m_alsps_misc/alsdelay
+    chown system system /sys/class/misc/m_alsps_misc/alsbatch
+    chown system system /sys/class/misc/m_alsps_misc/alsflush
+    chown system system /sys/class/misc/m_alsps_misc/psactive
+    chown system system /sys/class/misc/m_alsps_misc/psdelay
+    chown system system /sys/class/misc/m_alsps_misc/psbatch
+    chown system system /sys/class/misc/m_alsps_misc/psflush
 
     chmod 0660 /sys/class/misc/m_gyro_misc/gyroenablenodata
     chmod 0660 /sys/class/misc/m_gyro_misc/gyroactive
@@ -165,17 +147,13 @@ on post-fs-data
     chown system media /dev/MJC
 
     # Boot mode
-    chmod 0664 /sys/class/BOOT/BOOT/boot/boot_mode
+    chmod 0666 /sys/class/BOOT/BOOT/boot/boot_mode
     chown system system /sys/class/BOOT/BOOT/boot/boot_mode
 
     # Graphic
     chmod 0660 /dev/mtk_disp_mgr
+    chmod 0660 /dev/sw_sync
     chown system graphics /dev/mtk_disp_mgr
-
-    chmod 0660 /dev/graphics/fb0
-    chown system graphics /dev/graphics/fb0
-
-    chmod 0666 /dev/sw_sync
     chown system graphics /dev/sw_sync
 
     # Autok
@@ -191,7 +169,7 @@ on post-fs-data
     chown root system /sys/autok/stage2/3
 
     # Device info /proc interface
-    chmod 0440 /dev/devmap
+    chmod 0666 /dev/devmap
     chown root system /dev/devmap
 
     # Camera
@@ -215,7 +193,7 @@ on post-fs-data
     chmod 0666 /dev/MTK_SMI
     chown system media /dev/MTK_SMI
 
-    chmod 0660 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
+    chmod 0666 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
     chown system media /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
 
     # MTK_SCHED
@@ -223,20 +201,14 @@ on post-fs-data
     chown system media /dev/mtk_sched
 
     # AGPS
-    mkdir /data/agps_supl 0771 gps system
     restorecon_recursive /data/misc/gps
 
     # BT/FM/GPS
     chmod 0660 /dev/ttyMT2
     chown system system /dev/ttyMT2
 
-    # Wi-Fi
-    mkdir /data/misc/wifi 0770 wifi wifi
-    mkdir /data/misc/wifi/sockets 0770 wifi wifi
-    chown wifi wifi /data/misc/wifi
-
     # Thermal
-    mkdir /data/.tp/ 0775 system system
+    mkdir /data/.tp 0775 system system
 
     # Consumerir
     chmod 0660 /dev/consumerir
@@ -281,14 +253,6 @@ on boot
     write /dev/cpuset/system-background/cpus 0-7
 
     write /proc/sys/vm/dirty_writeback_centisecs 300
-
-    # Screen brightness
-    chmod 0664 /sys/class/leds/lcd-backlight/brightness
-    chown system system /sys/class/leds/lcd-backlight/brightness
-
-    # Buttons backlight
-    chmod 0664 /sys/class/leds/button-backlight/brightness
-    chown system system /sys/class/leds/button-backlight/brightness
 
     # Leds
     chown system system /sys/class/leds/red/brightness
@@ -346,22 +310,20 @@ on boot
     write /sys/module/musb_hdrc/parameters/debug_level 0
     write /sys/module/lowmemorykiller/parameters/debug_level 0
 
-    exec /variant_check.sh
-
     # WMT loader
     chown shell system /proc/driver/wmt_aee
     chown shell system /proc/driver/wmt_dbg
 
 # Graphic
 service guiext-server /vendor/bin/guiext-server
-    class main
-    user system
-    group system graphics
+    class core
+    user root
+    group system graphics media
 
 service pq /vendor/bin/pq
-    class main
-    user system
-    group system graphics
+    class core
+    user root
+    group system graphics media camera
     oneshot
 
 service pvrsrvctl /vendor/bin/pvrsrvctl --no-module --start
@@ -371,20 +333,11 @@ service pvrsrvctl /vendor/bin/pvrsrvctl --no-module --start
     oneshot
 
 # WPA
-service p2p_supplicant /system/bin/wpa_supplicant \
+service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
-    -I/system/etc/wifi/wpa_supplicant_overlay.conf -N \
+    -I/vendor/etc/wifi/wpa_supplicant_overlay.conf -N \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -e/data/misc/wifi/entropy.bin \
-    -I/system/etc/wifi/p2p_supplicant_overlay.conf \
-    -O/data/misc/wifi/sockets -g@android:wpa_wlan0
-    class main
-    socket wpa_wlan0 dgram 660 wifi wifi
-    disabled
-    oneshot
-
-service wpa_supplicant /system/bin/wpa_supplicant \
-    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin \
-    -I/system/etc/wifi/wpa_supplicant_overlay.conf \
+    -I/vendor/etc/wifi/p2p_supplicant_overlay.conf \
     -O/data/misc/wifi/sockets -g@android:wpa_wlan0
     class main
     socket wpa_wlan0 dgram 660 wifi wifi
@@ -392,7 +345,7 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     oneshot
 
 # Modem
-service 6620_launcher /vendor/bin/6620_launcher -m 4 -p /system/etc/firmware/
+service conn_launcher /vendor/bin/6620_launcher -m 4 -p /system/etc/firmware/
     class core
     user system
     group system
@@ -400,18 +353,18 @@ service 6620_launcher /vendor/bin/6620_launcher -m 4 -p /system/etc/firmware/
 service autokd /vendor/bin/autokd
     class core
     user system
-    group system
+    group system root
 
 service ccci_fsd /vendor/bin/ccci_fsd 0
-    user radio
-    group radio system
     class core
+    user root
+    group radio system
     oneshot
 
 service ccci_mdinit /vendor/bin/ccci_mdinit 0
-    user system
-    group radio system
     class core
+    user root
+    group radio system
     oneshot
 
 service gsm0710muxd /vendor/bin/gsm0710muxd -s /dev/ttyC0 -f 512 -n 8 -m basic
@@ -421,9 +374,9 @@ service gsm0710muxd /vendor/bin/gsm0710muxd -s /dev/ttyC0 -f 512 -n 8 -m basic
     disabled
     oneshot
 
-service muxreport-daemon /vendor/bin/muxreport
+service muxreport /vendor/bin/muxreport
     class core
-    user radio
+    user root
     group radio cache inet misc
     disabled
     oneshot
@@ -431,51 +384,34 @@ service muxreport-daemon /vendor/bin/muxreport
 service nvram_daemon /vendor/bin/nvram_daemon
     class main
     user root
-    group system
-    oneshot
-
-service ril-daemon-mtk /vendor/bin/mtkrild
-    class core
-    socket rild stream 660 root radio
-    socket rild2 stream 660 root radio
-    socket rild3 stream 660 root radio
-    socket rild4 stream 660 root radio
-    socket rild-ims stream 660 root radio
-    socket rild-debug stream 660 radio system
-    socket rild-oem stream 660 radio system
-    socket rild-mtk-ut stream 660 radio net_bt
-    socket rild-mtk-ut-2 stream 660 radio net_bt
-    socket rild-mtk-modem stream 660 radio system
-    socket rild-atci stream 660 root radio
-    socket sap_uim_socket1 stream 660 bluetooth bluetooth
-    socket sap_uim_socket2 stream 660 bluetooth bluetooth
-    socket sap_uim_socket3 stream 660 bluetooth bluetooth
-    socket sap_uim_socket4 stream 660 bluetooth bluetooth
-    user root
-    group radio cache inet misc audio sdcard_r sdcard_rw log system
-    disabled
+    group root system
     oneshot
 
 service start_modem /vendor/bin/md_ctrl 1
     class main
+    user radio
+    group radio
     disabled
     oneshot
 
 service stop_modem /vendor/bin/md_ctrl 0
     class main
+    user radio
+    group radio
     disabled
     oneshot
 
 service wmt_loader /vendor/bin/wmt_loader
     class core
     user root
-    group root
+    group root system wifi
     oneshot
 
 # Thermal
 service thermal_manager /vendor/bin/thermal_manager
     class main
-    user root
+    user system
+    group system
     oneshot
 
 # Charging
@@ -486,8 +422,8 @@ service charger /charger
 
 service fuelgauged /vendor/bin/fuelgauged
     class main
-    user system
-    group system
+    user root
+    group root system
 
 # Accelerometer and gyroscope
 service bmi160d /vendor/bin/bmi160d
@@ -496,24 +432,24 @@ service bmi160d /vendor/bin/bmi160d
     group system
 
 # GPS
-service agpsd /vendor/bin/mtk_agpsd
-    class main
-    socket agpsd stream 660 gps system
-    socket agpsd2 stream 660 system inet
-    socket agpsd3 stream 660 system inet
-    user gps
-    group gps inet sdcard_r sdcard_rw misc radio
+#service agpsd /vendor/bin/mtk_agpsd
+#    class main
+#    socket agpsd stream 660 gps system
+#    socket agpsd2 stream 660 system inet
+#    socket agpsd3 stream 660 system inet
+#    user gps
+#    group gps inet sdcard_r sdcard_rw misc radio system
 
-service wifi2agps /vendor/bin/wifi2agps
-    class main
-    user wifi
-    group gps inet
+#service wifi2agps /vendor/bin/wifi2agps
+#    class main
+#    user wifi
+#    group gps inet
 
-service mnld /vendor/bin/mnld
-    class main
-    user gps
-    group gps inet misc sdcard_rw sdcard_r media_rw system
-    socket mnld stream 660 gps system
+#service mnld /vendor/bin/mnld
+#    class main
+#    user gps
+#    group gps inet misc sdcard_rw sdcard_r media_rw system
+#    socket mnld stream 660 gps system
 
 # Properties
 on property:vold.decrypt=trigger_reset_main
@@ -521,18 +457,16 @@ on property:vold.decrypt=trigger_reset_main
 
 on property:vold.decrypt=trigger_restart_min_framework
     start start_modem
-    start msensord
 
 on property:vold.decrypt=trigger_restart_framework
     start nvram_daemon
     start start_modem
-    start msensord
 
 on property:vold.decrypt=trigger_shutdown_framework
     start stop_modem
 
 on property:ril.muxreport=1
-    start muxreport-daemon
+    start muxreport
 
 on property:sys.boot_completed=1
     # end boot time tune
