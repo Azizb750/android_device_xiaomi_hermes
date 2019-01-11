@@ -71,9 +71,7 @@ static void power_hint(struct power_module *module, power_hint_t hint,
             break;
         case POWER_HINT_VSYNC:
         case POWER_HINT_INTERACTION:
-        case POWER_HINT_CPU_BOOST:
         case POWER_HINT_LAUNCH:
-        case POWER_HINT_SET_PROFILE:
         case POWER_HINT_VIDEO_ENCODE:
         case POWER_HINT_VIDEO_DECODE:
         case POWER_HINT_SUSTAINED_PERFORMANCE:
