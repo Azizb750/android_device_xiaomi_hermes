@@ -7,7 +7,7 @@ search_engine       u:object_r:search_service:s0
 audioprofile        u:object_r:audio_service:s0
 mobile              u:object_r:mtk_mobile_service:s0
 mtk-perfservice     u:object_r:mtk_perf_service:s0
-recovery            u:object_r:mtk_recovery_service:s0
+#recovery            u:object_r:mtk_recovery_service:s0
 mtkhdmi             u:object_r:mtk_hdmi_service:s0
 msgmonitorservice   u:object_r:mtk_msg_monitor_service:s0
 anrmanager          u:object_r:mtk_anrmanager_service:s0
@@ -16,7 +16,7 @@ SensorHubService    u:object_r:sensorservice_service:s0
 epdg_service        u:object_r:mtk_epgd_service:s0
 rns                 u:object_r:mtk_rns_service:s0
 
-# Other Services
+
 NvRAMAgent          u:object_r:nvram_agent_service:s0
 phoneEx             u:object_r:radio_service:s0
 DmAgent             u:object_r:dm_agent_binder_service:s0
@@ -42,3 +42,8 @@ media.VTS           u:object_r:vtservice_service:s0
 GpuAppSpectatorService  u:object_r:gas_srv_service:s0
 hotknotnativeservice    u:object_r:hotknot_native_service:s0
 wfo                 u:object_r:radio_service:s0
+multiwindow     u:object_r:mtk_multiwindow_service:s0
+mw_blacklist   u:object_r:mtk_mwblacklist_service:s0
+android.hardware.fingerprint.IGoodixFingerprintDaemon u:object_r:goodixfingerprintd_service:s0
+com.goodix.FingerprintService u:object_r:goodix_fingerprint_service:s0
+goodix.fp                                 u:object_r:goodix_service:s0

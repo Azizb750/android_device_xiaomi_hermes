@@ -7,7 +7,7 @@ type dhcp6s_exec,exec_type,file_type;
 
 # Date : WK14.34
 # Operation : Migration
-# Purpose :  wifi  
+# Purpose :  wifi
 allow netd wmtWifi_device:chr_file { write open };
 
 allow netd kernel:system module_request;
@@ -17,20 +17,20 @@ allow netd self:capability fsetid;
 
 # Date : WK14.34
 # Operation : Migration
-# Purpose :  property_service for wifi 
-allow netd mtk_wifi_prop:property_service set; 
+# Purpose :  property_service for wifi
+allow netd mtk_wifi_prop:property_service set;
 
 
 # Date : WK14.34
 # Operation : Migration
-# Purpose :   APP 
+# Purpose :   APP
 allow netd platform_app:fd use;
 allow netd platform_app_tmpfs:file write;
 
 
 # Date : WK14.37
 # Operation : Migration
-# Purpose :  PPPOE Test 
+# Purpose :  PPPOE Test
 allow netd ppp:process sigkill;
 
 # Date : WK14.39
@@ -49,7 +49,7 @@ allow netd netdiag:udp_socket { read write getopt setopt};
 
 # Date : WK14.41
 # Operation : Migration
-# Purpose :  ipv6 Tethering Test 
+# Purpose :  ipv6 Tethering Test
 #============= netd ==============
 allow netd dhcp6s_exec:file execute;
 allow netd dhcp_data_file:dir { read search write add_name remove_name };
@@ -63,7 +63,7 @@ allow netd wide_dhcpv6_data_file:dir { read search write add_name remove_name};
 allow netd wide_dhcpv6_data_file:file { read write create open getattr unlink};
 
 # Date : WK14.42
-# Operation : Migration 
+# Operation : Migration
 # Purpose : for VoLTE L early bring up and first call
 allow netd volte_stack:fd use;
 allow netd volte_stack:tcp_socket { read write setopt getopt };
@@ -126,3 +126,7 @@ allow netd wfca:udp_socket {read write setopt getopt};
 allow netd volte_ua:fd use;
 allow netd volte_ua:udp_socket {read write setopt getopt};
 
+# Nougat
+allow netd wifi_data_file:dir { create setattr };
+allow netd dhcp_data_file:dir { setattr };
+allow netd wifi_data_file:sock_file { create setattr unlink };

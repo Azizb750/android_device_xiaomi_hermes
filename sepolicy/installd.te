@@ -43,7 +43,7 @@ allow installd vfat:dir search;
 
 # Date : WK14.46
 # Operation : SQC1
-# Purpose : MOTA update KK to L, workaround for access /data/.layout_version 
+# Purpose : MOTA update KK to L, workaround for access /data/.layout_version
 allow installd system_data_file:file open;
 
 # Date : WK15.02
@@ -62,3 +62,6 @@ allow installd platform_app_tmpfs:file { open read write getattr };
 userdebug_or_eng(`
   allow installd dex2oat:process noatsecure;
 ')
+
+# Nougat
+allow installd mobicore_data_file:dir { r_file_perms write remove_name rmdir };

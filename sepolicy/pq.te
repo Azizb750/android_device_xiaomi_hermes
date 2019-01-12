@@ -34,7 +34,6 @@ allow pq graphics_device:chr_file { read write open ioctl };
 # Date : 2014/10/29
 # Operation : Migration
 # Purpose : for enforcing
-allow pq init:unix_stream_socket connectto;
 allow pq property_socket:sock_file write;
 #allow pq tmpfs:lnk_file read;
 
@@ -58,3 +57,8 @@ allow pq pq_service:service_manager add;
 # Purpose : Allow permission check
 allow pq pq_service:service_manager { find };
 allow pq permission_service:service_manager { find };
+
+# Nougat
+allow pq proc:file { read open ioctl };
+allow pq rootfs:lnk_file { getattr };
+set_prop(pq, pq_conf_prop)

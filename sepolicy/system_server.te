@@ -194,11 +194,6 @@ allow system_server dex2oat_exec:file r_file_perms;
 # allow system_server fuse:dir r_dir_perms;
 
 # Date: WK14.47
-# Operation : CTS
-# Purpose : for executing recovery.dex
-allow system_server system_data_file:file execute;
-
-# Date: WK14.47
 # Operation : MTBF
 # Purpose : for debug
 allow system_server sf_rtt_file:file r_file_perms;
@@ -254,9 +249,39 @@ allow system_server dhcp6c:process signal;
 # Purpose : Allow P2P framework to read MAC via nvram_agent_service
 allow system_server nvram_agent_service:service_manager find;
 
-# Date : WK15.42
-# Operation : Migration
-# Purpose : RGX 1.5 DDK requires client to have fifo R/W and sync_device permission
-allow system_server surfaceflinger:fifo_file rw_file_perms; 
-allow system_server sw_sync_device:chr_file { read write getattr open ioctl };
+# Date : 2015/10/27
+# Operation : Feature Developing
+# Purpose : allow system_server to find mw_blacklist
+# Package: com.mediatek.multiwindow.service
+allow system_server mtk_mwblacklist_service:service_manager find;
 
+allow system_server debugfs:dir r_file_perms;
+allow system_server unlabeled:file unlink;
+allow system_server wmt_prop:file { read open getattr };
+# Purpose : RGX 1.5 DDK requires client to have fifo R/W and sync_device permission
+# Date : WK15.42
+allow system_server surfaceflinger:fifo_file rw_file_perms;
+# Operation : Migration
+allow system_server sw_sync_device:chr_file { read write getattr open ioctl };
+allow system_server wifi_data_file:sock_file { unlink };
+
+# Goodixfingerprintd
+binder_call(system_server,goodixfingerprintd)
+allow system_server McDriverDaemon_device:chr_file rw_file_perms;
+allow system_server tee_device:chr_file r_file_perms;
+allow system_server goodixfingerprintd_device:chr_file rw_file_perms;
+
+# RGB Display Color
+#allow system_server display_color_sysfs:file rw_file_perms;
+
+# Fast Charge
+#allow system_server fast_charge_sysfs:file rw_file_perms;
+
+# Smart Wake
+#allow system_server smartwake_sysfs:file rw_file_perms;
+
+# Persist
+allow system_server protect_s_data_file:dir r_dir_perms;
+
+# dev_info 
+allow system_server sysfs_devinfo:file r_file_perms; 

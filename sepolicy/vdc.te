@@ -4,7 +4,7 @@
 
 
 # Date : WK14.37
-# Operation : Migration 
+# Operation : Migration
 # Purpose : property
 allow vdc vold_prop:property_service set;
 
@@ -17,4 +17,3 @@ allow vdc tmpfs:chr_file { read write getattr ioctl };
 allow vdc fon_image_data_file:dir { search write add_name};
 allow vdc fon_image_data_file:file create;
 allow vdc fon_image_data_file:file { read write open };
-

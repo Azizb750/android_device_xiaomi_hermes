@@ -1,5 +1,5 @@
 # Date : WK14.41
-# Operation : Migration 
+# Operation : Migration
 # Purpose : update recovery image
 allow install_recovery bootimg_device:chr_file { open read write };
 allow install_recovery recovery_device:chr_file { open read write };

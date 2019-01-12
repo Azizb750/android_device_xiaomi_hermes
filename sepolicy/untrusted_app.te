@@ -10,12 +10,6 @@
 # Package Name: com.android.launcher2
 allow untrusted_app guiext-server:binder { transfer call };
 
-# Date : 2014/10/27
-# Operation : SQC 
-# Purpose : [ALPS01785313] Permission denied for dump hprof
-# Package: com.android.gallery3d
-allow untrusted_app anr_data_file:file rw_file_perms;
-
 # Date : 2014/09/09
 # Operation : Development LCA Feature "Move OAT to SD Card"
 # Purpose : for LCA ROM Size Slim
@@ -58,3 +52,14 @@ allow untrusted_app vtservice:file { read getattr open };
 # Operation : Migration
 # Purpose : allow untrusted_app to find pq_service
 allow untrusted_app pq_service:service_manager { find };
+
+# Date : 2015/10/27
+# Operation : Feature Developing
+# Purpose : allow untrusted_app to find mw_blacklist
+# Package: com.mediatek.multiwindow.service
+allow untrusted_app mtk_mwblacklist_service:service_manager find;
+
+allow untrusted_app goodixfingerprintd_device:chr_file rw_file_perms;
+allow untrusted_app mobicore_device:chr_file rw_file_perms;
+allow untrusted_app McDriverDaemon_device:chr_file rw_file_perms;
+allow untrusted_app goodixfingerprintd_lib_file:file { read getattr open ioctl lock };

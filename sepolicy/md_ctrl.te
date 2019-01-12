@@ -1,5 +1,5 @@
 # ==============================================
-# Policy File of /system/bin/md_ctrl Executable File 
+# Policy File of /system/bin/md_ctrl Executable File
 
 # ==============================================
 # Type Declaration
@@ -29,3 +29,5 @@ allow md_ctrl eemcs_device:chr_file open;
 allow md_ctrl property_socket:sock_file write;
 allow md_ctrl init:unix_stream_socket connectto;
 allow md_ctrl vold_prop:property_service set;
+
+set_prop(md_ctrl,vold_encryption_type_prop);

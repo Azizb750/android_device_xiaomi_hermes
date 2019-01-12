@@ -186,3 +186,13 @@ ril.volte.              u:object_r:volte_prop:s0
 
 #=============allow hotknot deamon  ==============
 hotknot.    u:object_r:hotknot_prop:s0
+
+ctl.mxg2320d        u:object_r:ctl_mxg2320d_prop:s0
+ctl.memsicd3416x u:object_r:ctl_memsicd3416x_prop:s0
+service.nvram_init  u:object_r:nvram_prop:s0
+persist.sys.pq      u:object_r:pq_conf_prop:s0
+sys.msim.power.slot0 u:object_r:ril_msim_power_prop:s0
+sys.msim.power.slot1 u:object_r:ril_msim_power_prop:s0
+sys.sim_inserted_status_0 u:object_r:ril_sim_inserted_status:s0
+sys.sim_inserted_status_1 u:object_r:ril_sim_inserted_status:s0
+vold.encryption.type u:object_r:vold_encryption_type_prop:s0

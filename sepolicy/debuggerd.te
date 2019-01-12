@@ -38,10 +38,6 @@ allow debuggerd exm0_device:chr_file r_file_perms;
 allow debuggerd shell_exec:file { execute execute_no_trans };
 allow debuggerd dex2oat_exec:file { execute execute_no_trans };
 
-# aee db dir and db files
-allow debuggerd sdcard_internal:dir create_dir_perms;
-allow debuggerd sdcard_internal:file create_file_perms;
-
 #data/anr
 allow debuggerd anr_data_file:dir create_dir_perms;
 allow debuggerd anr_data_file:file create_file_perms;
@@ -62,8 +58,8 @@ allow debuggerd aee_core_data_file:file create_file_perms;
 allow debuggerd data_tmpfs_log_file:dir create_dir_perms;
 allow debuggerd data_tmpfs_log_file:file create_file_perms;
 
-allow debuggerd shell_data_file:dir search;
-allow debuggerd shell_data_file:file r_file_perms;
+#allow debuggerd shell_data_file:dir search;
+#allow debuggerd shell_data_file:file r_file_perms;
 
 #/data/anr/SF_RTT
 allow debuggerd sf_rtt_file:dir search;
@@ -72,7 +68,7 @@ allow debuggerd sf_rtt_file:file r_file_perms;
 allow debuggerd sysfs:file write;
 allow debuggerd proc:file write;
 allow debuggerd sysfs_lowmemorykiller:file { read open };
-allow debuggerd debugfs:file read;
+#allow debuggerd debugfs:file read;
 #allow debuggerd proc_security:file { write open };
 
 allow debuggerd self:capability { fsetid sys_nice sys_resource net_admin sys_module };
@@ -164,7 +160,7 @@ allow debuggerd proc_secmem:file r_file_perms;
 #add debuggerd policy
 allow debuggerd mnt_user_file:dir search;
 allow debuggerd mnt_user_file:lnk_file read;
-allow debuggerd procrank_exec:file { execute execute_no_trans };
+#allow debuggerd procrank_exec:file { execute execute_no_trans };
 #allow debuggerd storage_file:dir search;
 allow debuggerd storage_file:lnk_file read;
 
@@ -201,3 +197,17 @@ allow debuggerd gfxinfo_service:service_manager find;
 #scp file dumpstate
 allow debuggerd sysfs_scp:dir search;
 allow debuggerd sysfs_scp:file { read open };
+
+# Nougat
+allow debuggerd init:fd use;
+allow debuggerd null_device:chr_file { read write };
+allow debuggerd urandom_device:chr_file { getattr ioctl open read };
+allow debuggerd properties_device:dir { getattr };
+allow debuggerd property_contexts:file { getattr read open };
+allow debuggerd properties_serial:file { getattr read open };
+allow debuggerd sysfs_devices_system_cpu:dir search;
+allow debuggerd sysfs_devices_system_cpu:file { getattr read open };
+allow debuggerd self:unix_stream_socket { create setopt bind listen read };
+allow debuggerd self:process fork;
+allow debuggerd self:unix_dgram_socket { create connect };
+allow debuggerd log_tag_prop:file { getattr read open };

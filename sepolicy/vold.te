@@ -3,7 +3,7 @@
 # ==============================================
 
 # Date : WK14.37
-# Operation : Migration 
+# Operation : Migration
 # Purpose : Access 'OMADM_USB' nvram
 allow vold nvram_data_file:file { read getattr open write create setattr};
 allow vold nvram_data_file:lnk_file read;
@@ -22,26 +22,26 @@ allow vold mmcblk0_block_device:blk_file rw_file_perms;
 allow vold proc:file write;
 
 # Date : WK14.37
-# Operation : Migration 
+# Operation : Migration
 # Purpose : re-init ExternalSD
 allow vold misc_sd_device:chr_file { read ioctl open };
 
 
 # Date : WK14.38
-# Operation : Migration 
+# Operation : Migration
 # Purpose : encrypt phone
 allow vold kernel:system module_request;
 allow vold misc_device:chr_file { write open };
 #allow vold platformblk_device:blk_file { ioctl getattr };
-allow vold zram0_device:blk_file getattr;
+
 
 # Date : WK14.38
-# Operation : Migration 
+# Operation : Migration
 # Purpose : symbolic link for /data/ext_sdcard_tool
 allow vold system_data_file:lnk_file { create unlink };
 
 # Date : WK14.40
-# Operation : Migration 
+# Operation : Migration
 # Purpose : multi partition
 allow vold sdcardd_exec:file { read open execute execute_no_trans };
 allow vold self:capability { sys_resource setgid setuid };
@@ -50,7 +50,7 @@ allow vold fuse_device:chr_file { read write open };
 allow vold system_data_file:file open;
 
 # Date : WK14.40
-# Operation : Migration 
+# Operation : Migration
 # Purpose : ptrace process
 allow vold mediaserver:process ptrace;
 
@@ -61,7 +61,7 @@ allow vold protect_s_data_file:dir { read getattr open ioctl };
 allow vold persist_data_file:dir { read getattr open ioctl };
 
 # Date : WK14.44
-# Operation : Migration 
+# Operation : Migration
 allow vold proc_lk_env:file { read write open ioctl};
 allow vold media_rw_data_file:dir { read open };
 
@@ -134,7 +134,7 @@ allow vold resize_exec:file rx_file_perms;
 allow vold proc_mtkcooler:dir r_dir_perms;
 allow vold proc_mtktz:dir r_dir_perms;
 
-allow vold block_device:blk_file { read write ioctl open getattr };
+allow vold block_device:blk_file { ioctl getattr };
 
 # Date : WK15.37
 # Operation : Migration
@@ -145,3 +145,17 @@ allow vold mmcblk1p1_block_device:blk_file { open read write lock ioctl getattr}
 # Purpose : access protect1 and protect2 partitions for the platform without nvdata partition
 allow vold protect1_block_device:blk_file rw_file_perms;
 allow vold protect2_block_device:blk_file rw_file_perms;
+allow vold nvdata_device:blk_file rw_file_perms;
+allow vold protect1_device:blk_file rw_file_perms;
+allow vold protect2_device:blk_file rw_file_perms;
+allow vold zram0_device:blk_file getattr;
+allow vold cache_block_device:blk_file rw_file_perms;
+
+# Nougat
+allow vold init:fd use;
+allow vold null_device:chr_file { read write open };
+allow vold self:unix_stream_socket { read write };
+allow vold urandom_device:chr_file { read getattr ioctl open };
+allow vold properties_device:dir getattr;
+allow vold property_contexts:file { getattr read open };
+allow vold properties_serial:file { getattr read open };

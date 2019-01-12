@@ -11,6 +11,7 @@ allow bluetooth nvram_data_file:file rw_file_perms;
 allow bluetooth nvram_data_file:lnk_file read;
 allow bluetooth nvdata_file:dir search;
 allow bluetooth nvdata_file:file { read write getattr open };
+allow bluetooth nvdata_file:lnk_file r_file_perms;
 
 allow bluetooth block_device:dir search;
 allow bluetooth proc_secmem:file { read open };
@@ -22,3 +23,7 @@ allow bluetooth platform_app_tmpfs:file write;
 # Operation : Migration
 # Purpose: Allow bluetooth to access surfaceflinger
 allow bluetooth surfaceflinger:fifo_file { read write };
+allow bluetooth bt_prop:file { getattr open read };
+
+# boot_mode 
+allow bluetooth sysfs_boot_mode:file r_file_perms; 

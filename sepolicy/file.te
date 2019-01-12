@@ -75,7 +75,6 @@ type mnld_data_file, file_type, data_file_type;
 type sysctl_socket, file_type;
 
 type backuprestore_socket, file_type;
-type nfc_socket, file_type;
 
 type protect_f_data_file, file_type, data_file_type;
 type protect_s_data_file, file_type, data_file_type;
@@ -145,7 +144,7 @@ type sysfs_msensor_file, file_type,sysfs_type;
 type sysfs_keypad_file, file_type,sysfs_type;
 type istd8303_access_file1, file_type,data_file_type;
 type istd8303_access_file2, file_type,data_file_type;
-
+type sysfs_membw, fs_type, sysfs_type;
 
 type rild_via_socket, file_type;
 type rpc_socket, file_type;
@@ -197,12 +196,38 @@ type adbd_data_file, file_type, data_file_type;
 #autokd data file
 type autokd_data_file, file_type, data_file_type;
 
-#fuse
-type fuseblk,sdcard_type,fs_type,mlstrustedobject;
-
 # debuggerd mrdump allocfile
 #type debuggerd_data_file, file_type, data_file_type;
 
 #ipoh data file
 type ipoh_data_file, file_type, data_file_type;
 
+#Sensors
+type mxg2320_data_file, file_type, data_file_type;
+type mmc3524x_data_file, file_type, data_file_type;
+
+# Fingerprint
+type sysfs_fingerprintd, fs_type, sysfs_type;
+type sysfs_goodixfingerprintd, fs_type, sysfs_type;
+type goodixfingerprintd_data_file, file_type, data_file_type;
+type goodixfingerprintd_lib_file, file_type, data_file_type;
+
+# Mobicore library files
+type mobicore_lib_file, file_type, data_file_type;
+
+# TEEI data file
+type teei_data_file, file_type, data_file_type;
+
+#OTHER
+type sysfs_devinfo, fs_type, sysfs_type;
+#type fast_charge_sysfs, fs_type, sysfs_type;
+#type smartwake_sysfs, fs_type, sysfs_type;
+#type display_color_sysfs, fs_type, sysfs_type;
+#type sysfs_dt2w, fs_type, sysfs_type;
+type sysfs_ccci, fs_type, sysfs_type;
+type perf_control_sysfs, fs_type, sysfs_type;
+type sysfs_ddr_type, fs_type, sysfs_type;
+
+# fuelgauge
+type fuelgauge_data_file, file_type, data_file_type;
+type sysfs_boot_mode, fs_type, sysfs_type;

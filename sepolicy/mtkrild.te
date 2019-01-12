@@ -7,7 +7,7 @@
 # ==============================================
 
 type mtkrild_exec , exec_type, file_type;
-type mtkrild ,domain;
+type mtkrild ,domain, domain_deprecated;
 
 
 # ==============================================
@@ -95,4 +95,11 @@ allow mtkrild socket_device:sock_file write;
 allow mtkrild mtkmal:unix_stream_socket connectto;
 allow mtkrild mal_mfi_socket:sock_file write;
 
-
+# Nougat
+allow mtkrild gsm0710muxd_prop:file { read open getattr };
+allow mtkrild persist_ril_prop:file { read open getattr };
+allow mtkrild proc:file { open read write };
+allow mtkrild ril_mux_report_case_prop:file { read open getattr };
+allow mtkrild sysfs:file { read open };
+allow mtkrild rootfs:lnk_file { getattr };
+allow mtkrild serial_number_prop:property_service set;

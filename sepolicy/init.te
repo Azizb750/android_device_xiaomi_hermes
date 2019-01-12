@@ -47,6 +47,8 @@ allow init seccfg_block_device:blk_file relabelto;
 allow init secro_block_device:blk_file relabelto;
 allow init frp_block_device:blk_file relabelto;
 allow init userdata_block_device:blk_file relabelto;
+allow init tee_device:chr_file { rw_file_perms };
+
 
 
 # Date : WK15.30
@@ -62,7 +64,7 @@ allow init persist_block_device:blk_file { write read };
 # Date : WK15.31
 # Operation : Migration
 # Purpose : create symbolic link from /mnt/sdcard to /sdcard
-allow init tmpfs:lnk_file create;
+allow init tmpfs:lnk_file { create unlink };
 
 # Date : WK15.32
 # Operation : Migration
@@ -81,3 +83,29 @@ allow init socket_device:sock_file { create unlink setattr };
 # Purpose : enable mtd device for ubi ioctl
 allow init mtd_device:chr_file { ioctl getattr };
 
+
+# for nvram_proximity
+allow init als_ps_device:chr_file ioctl;
+allow init nvram_device:blk_file write;
+#allow init system_file:file execute_no_trans;
+
+# for fm
+allow init device:chr_file create;
+allow init debugfs:dir mounton;
+allow init property_socket:sock_file write;
+
+# Nougat
+allow init loop_device:blk_file { write };
+allow init block_device:lnk_file setattr;
+allow init debugfs:file { write };
+allow init protect1_device:blk_file write;
+allow init protect2_device:blk_file write;
+allow init ccci_device:chr_file { write ioctl };
+allow init devpts:chr_file ioctl;
+allow init perf_control_sysfs:file getattr;
+allow init wmtWifi_device:chr_file write;
+allow init null_device:chr_file { read write };
+allow init properties_serial:file { getattr read open };
+allow init self:file write;
+allow init self:unix_stream_socket { accept getopt listen read write };
+allow init self:fd use;

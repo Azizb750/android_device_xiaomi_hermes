@@ -22,4 +22,3 @@ unix_socket_connect(netdomain, dnsproxyd, netd)
 # ==============================================
 # MTK Policy Rule
 # ==============================================
-

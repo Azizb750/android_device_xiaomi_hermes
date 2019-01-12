@@ -24,8 +24,6 @@ allow mediaserver self:capability sys_nice;
 # Date : WK14.32
 # Operation : Migration
 # Purpose : Set audio driver permission to access SD card for debug purpose and accss NVRam.
-allow mediaserver sdcard_internal:dir { write create add_name };
-allow mediaserver sdcard_internal:file create;
 allow mediaserver nvram_data_file:dir { add_name write search };
 allow mediaserver nvram_data_file:file { write getattr setattr read create open };
 allow mediaserver nvram_data_file:lnk_file read;
@@ -79,12 +77,6 @@ allow mediaserver camera_sysram_device:chr_file { read ioctl open };
 # Purpose : VDEC/VENC device node
 allow mediaserver Vcodec_device:chr_file { read write ioctl open };
 
-# Date : WK14.36
-# Operation : Migration
-# Purpose : MMProfile debug
-# userdebug_or_eng(`
-allow mediaserver debugfs:file {read ioctl getattr};
-# ')
 
 # Date : WK14.36
 # Operation : Migration
@@ -99,6 +91,12 @@ allow mediaserver mmcblk0_block_device:blk_file { read write open };
 #allow mediaserver nvram_data_file:dir { write search };
 #allow mediaserver system_data_file:dir { write add_name };
 #allow mediaserver system_data_file:file { write create setattr };
+
+ifelse(target_has_legacy_camera_hal1, `true',
+   allow mediaserver cameraproxy_service:service_manager find;
+   allow mediaserver cameraserver_service:service_manager add;
+ ,
+ )
 
 # Date : WK14.36
 # Operation : Migration
@@ -228,9 +226,9 @@ allow mediaserver mtk_jpeg_device:chr_file { read ioctl open };
 # Date : WK14.41
 # Operation : Migration
 # Purpose : Lossless BT audio
-allow mediaserver shell_exec:file { read open execute execute_no_trans };
-allow mediaserver system_file:file execute_no_trans;
-allow mediaserver zygote_exec:file execute_no_trans;
+allow mediaserver shell_exec:file { read open execute };
+
+
 
 # Date : WK14.41
 # Operation : Migration
@@ -349,7 +347,7 @@ allow mediaserver untrusted_app_tmpfs:file write;
 # Operation : WFD
 # Purpose : WFD notifies its status to thermal module
 allow mediaserver proc_thermal:file { write getattr open };
-allow mediaserver thermal_manager_exec:file { getattr execute read open execute_no_trans };
+allow mediaserver thermal_manager_exec:file { getattr execute read open };
 allow mediaserver proc_mtkcooler:file { read write open };
 allow mediaserver proc_mtktz:file { read write open };
 allow mediaserver proc_thermal:file { read write open };
@@ -375,7 +373,6 @@ allow mediaserver offloadservice_device:chr_file { read write ioctl open };
 # Date : WK15.30
 # Operation : Migration
 # Purpose : for device bring up, not to block early migration/sanity
-allow mediaserver system_file:file execmod;
 allow mediaserver guiext-server_service:service_manager find;
 
 # Date : WK15.31
@@ -437,3 +434,23 @@ allow mediaserver sw_sync_device:chr_file rw_file_perms;
 # Purpose : # Date : WK15.49
 # Purpose : nvram create file fail
 allow mediaserver kmsg_device:chr_file { write open };
+
+#bootmode
+allow mediaserver sysfs_boot_mode:file r_file_perms;
+
+# Nougat
+allow mediaserver proc:file { read open ioctl };
+allow mediaserver sysfs:file { read open };
+allow mnld apk_data_file:file { open read write create getattr };
+allow mnld rootfs:lnk_file { getattr };
+allow mnld storage_file:lnk_file { read };
+allow mnld mnt_user_file:lnk_file { read };
+allow mnld mnt_user_file:dir { search };
+allow mnld system_data_file:file { open read getattr };
+allow mnld wmt_prop:file r_file_perms;
+allow mediaserver device:chr_file { ioctl };
+allow mediaserver mediatek_prop:file { read open getattr };
+allow mediaserver sysfs_devinfo:file r_file_perms;
+
+# mediadrmserver policy
+allow mediadrmserver rootfs:lnk_file { getattr };

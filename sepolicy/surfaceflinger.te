@@ -78,3 +78,10 @@ allow surfaceflinger mtk_perf_service:service_manager find;
 # Operation : Migration
 # Purpose : allow surfaceflinger to find pq_service
 allow surfaceflinger pq_service:service_manager { find };
+allow surfaceflinger guiext-server_service:service_manager { find add };
+
+# boot_mode 
+allow surfaceflinger sysfs_boot_mode:file r_file_perms; 
+
+#dev_info 
+allow surfaceflinger sysfs_devinfo:file r_file_perms; 

@@ -3,7 +3,7 @@
 # ============
 
 # Date : WK14.37
-# Operation : Migration 
+# Operation : Migration
 # Purpose : for sdcard daemon to access lk_env
 allow sdcardd proc_lk_env:file { read write ioctl open };
 allow sdcardd misc_device:chr_file { read write open };
