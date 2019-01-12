@@ -4,7 +4,6 @@ LOCAL_PATH := device/xiaomi/hermes
 TARGET_BOOTLOADER_BOARD_NAME := mt6795
 TARGET_BOARD_PLATFORM := mt6795
 TARGET_NO_BOOTLOADER := true
-TARGET_IS_64_BIT := true
 
 # CPU
 TARGET_ARCH := arm64
@@ -20,7 +19,8 @@ TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a53
 
 # Kernel
-TARGET_KMODULES := true
+TARGET_USES_64_BIT_BINDER := true
+TARGET_IS_64_BIT := true
 #TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel
 BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive
 BOARD_MKBOOTIMG_ARGS := \
@@ -56,6 +56,12 @@ SUPPRESS_MTK_AUDIO_BLOB_ERR_MSG := true
 COMMON_GLOBAL_CFLAGS += -DMTK_HARDWARE -DLEGACY_MTK_AV_BLOB -DADD_LEGACY_ACQUIRE_BUFFER_SYMBOL
 COMMON_GLOBAL_CPPFLAGS += -DMTK_HARDWARE -DLEGACY_MTK_AV_BLOB
 MTK_HARDWARE := true
+
+TARGET_PROCESS_SDK_VERSION_OVERRIDE += \
+    /system/bin/mediaserver=22 \
+    /system/vendor/bin/hw/rild=27 \
+    /system/bin/audioserver=22 \
+	/system/vendor/bin/hw/android.hardware.audio@2.0-service=22
 
 # Initial API Level of the Device
 PRODUCT_SHIPPING_API_LEVEL := 21
