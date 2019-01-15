@@ -141,8 +141,8 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/codecs/media_codecs.xml:/system/vendor/etc/media_codecs.xml \
     $(LOCAL_PATH)/configs/codecs/media_profiles.xml:/system/vendor/etc/media_profiles.xml \
     $(LOCAL_PATH)/configs/codecs/media_profiles.xml:/system/vendor/etc/media_profiles_V1_0.xml \
-    $(LOCAL_PATH)/configs/mtk_omx_core.cfg:system/etc/mtk_omx_core.cfg \
-    $(LOCAL_PATH)/configs/mtk_omx_core.cfg:system/vendor/etc/mtk_omx_core.cfg \
+    $(LOCAL_PATH)/configs/codecs/mtk_omx_core.cfg:system/etc/mtk_omx_core.cfg \
+    $(LOCAL_PATH)/configs/codecs/mtk_omx_core.cfg:system/vendor/etc/mtk_omx_core.cfg \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:/system/vendor/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:/system/vendor/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:/system/vendor/etc/media_codecs_google_video_le.xml
