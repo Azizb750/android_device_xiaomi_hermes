@@ -26,7 +26,13 @@ PRODUCT_PACKAGES += Snap
 
 # Shim symbols
 PRODUCT_PACKAGES += \
-    libmtk_symbols
+    libshim_c \
+    libshim_camera_client \
+    libshim_cutils \
+    libshim_media \
+    libshim_stagefright \
+    libshim_ui \
+    libshim_xlog
 
 # Power HAL
 PRODUCT_PACKAGES += power.mt6795
