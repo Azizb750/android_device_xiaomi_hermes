@@ -20,7 +20,7 @@ TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a53
 
 # Kernel
-TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel
+#TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel
 BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive
 BOARD_MKBOOTIMG_ARGS := \
     --base 0x40078000 \
@@ -30,6 +30,11 @@ BOARD_MKBOOTIMG_ARGS := \
     --ramdisk_offset 0x03f88000 \
     --second_offset 0x00e88000 \
     --tags_offset 0x0df88000
+
+TARGET_KERNEL_SOURCE := kernel/xiaomi/hermes
+TARGET_KERNEL_CONFIG := hermes_defconfig
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
+BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 
 # Partitons
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 12737576960
@@ -106,11 +111,11 @@ BOARD_SUPPRESS_EMMC_WIPE := true
 BOARD_RECOVERY_SWIPE := true
 
 # Seccomp
-TARGET_DOES_NOT_SUPPORT_SECCOMP := true
+#TARGET_DOES_NOT_SUPPORT_SECCOMP := true
 
 # Sepolicy
 BOARD_SEPOLICY_DIRS += device/xiaomi/hermes/sepolicy
-POLICYVERS := 28
+#POLICYVERS := 28
 
 # Build kernel without kernel sources
 $(shell mkdir -p $(OUT)/obj/KERNEL_OBJ/usr)
