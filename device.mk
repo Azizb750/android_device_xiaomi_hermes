@@ -50,7 +50,7 @@ PRODUCT_PACKAGES += \
     libion
 
 # Doze
-PRODUCT_PACKAGES += XiaomiDoze
+#PRODUCT_PACKAGES += XiaomiDoze
 
 # GPS
 PRODUCT_PACKAGES += libcurl
@@ -59,9 +59,9 @@ PRODUCT_PACKAGES += libcurl
 PRODUCT_PACKAGES += libmockdrmcryptoplugin
 
 # FM Radio
-PRODUCT_PACKAGES += \
-	FMRadio \
-	libfmcust
+#PRODUCT_PACKAGES += \
+#	FMRadio \
+#	libfmcust
 	
 # Audio
 PRODUCT_PACKAGES += \

@@ -3,7 +3,11 @@ LOCAL_PATH := $(call my-dir)
 # libshim_c
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := libc.cpp
-LOCAL_SHARED_LIBRARIES := libbinder libc
+# libc is going to be linked with libshim_c via patch to account for libhybris
+# without LD_SHIM_LIBS support, so avoid creating circular dependency here
+LOCAL_SYSTEM_SHARED_LIBRARIES :=
+LOCAL_CXX_STL := none
+LOCAL_ALLOW_UNDEFINED_SYMBOLS := true
 LOCAL_MODULE := libshim_c
 LOCAL_CFLAGS := -Wno-unused-variable -Wno-unused-parameter
 LOCAL_PROPRIETARY_MODULE := true
@@ -30,8 +34,8 @@ include $(BUILD_SHARED_LIBRARY)
 # libshim_xlog
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := liblog.c
-LOCAL_SHARED_LIBRARIES := libbinder liblog
 LOCAL_MODULE := libshim_xlog
+LOCAL_ALLOW_UNDEFINED_SYMBOLS := true
 LOCAL_CFLAGS := -Wno-unused-variable -Wno-unused-parameter
 LOCAL_PROPRIETARY_MODULE := true
 include $(BUILD_SHARED_LIBRARY)
