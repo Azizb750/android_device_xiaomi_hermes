@@ -1,0 +1,30 @@
+From 4ea152af878ff5b8ff2315643962cf02213c7251 Mon Sep 17 00:00:00 2001
+From: NeKit <nekit1000@gmail.com>
+Date: Sun, 20 Jan 2019 16:51:12 +0100
+Subject: [PATCH] Halium: hermes: link liblog to libshim_xlog
+
+Change-Id: I2bcd23958ae278274d70476d3a9e564bf5a98e04
+---
+ liblog/Android.mk | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/liblog/Android.mk b/liblog/Android.mk
+index b24b489aa..f26355770 100644
+--- a/liblog/Android.mk
++++ b/liblog/Android.mk
+@@ -77,6 +77,12 @@ LOCAL_CFLAGS := -Werror -fvisibility=hidden $(liblog_cflags)
+ # TODO: This is to work around b/24465209. Remove after root cause is fixed
+ LOCAL_LDFLAGS_arm := -Wl,--hash-style=both
+ 
++# FIXME: Halium: as libhybris currently does not support loading shim libraries,
++# link liblog to libshim_xlog instead to make sure the symbols get loaded
++ifeq ($(TARGET_DEVICE), hermes)
++LOCAL_SHARED_LIBRARIES := libshim_xlog
++endif
++
+ LOCAL_SANITIZE := never
+ LOCAL_CXX_STL := none
+ 
+-- 
+2.20.1
+
