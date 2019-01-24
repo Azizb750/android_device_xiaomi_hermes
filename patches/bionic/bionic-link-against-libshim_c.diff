@@ -1,0 +1,14 @@
+diff --git a/libc/Android.mk b/libc/Android.mk
+index ea8320997..03163efb0 100644
+--- a/libc/Android.mk
++++ b/libc/Android.mk
+@@ -1410,6 +1410,9 @@ LOCAL_PACK_MODULE_RELOCATIONS := false
+ # you wanted!
+ 
+ LOCAL_SHARED_LIBRARIES := libdl libdsyscalls
++ifeq ($(TARGET_DEVICE), hermes)
++LOCAL_SHARED_LIBRARIES += libshim_c
++endif
+ LOCAL_WHOLE_STATIC_LIBRARIES := libc_common libjemalloc
+ 
+ LOCAL_CXX_STL := none
