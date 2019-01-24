@@ -114,6 +114,23 @@ on post-fs-data
     chown system system /sys/class/misc/m_acc_misc/accbatch
     chown system system /sys/class/misc/m_acc_misc/accflush
 
+    chmod 0660 /sys/class/misc/m_alsps_misc/alsactive
+    chmod 0660 /sys/class/misc/m_alsps_misc/alsdelay
+    chmod 0660 /sys/class/misc/m_alsps_misc/alsbatch
+    chmod 0660 /sys/class/misc/m_alsps_misc/alsflush
+    chmod 0660 /sys/class/misc/m_alsps_misc/psactive
+    chmod 0660 /sys/class/misc/m_alsps_misc/psdelay
+    chmod 0660 /sys/class/misc/m_alsps_misc/psbatch
+    chmod 0660 /sys/class/misc/m_alsps_misc/psflush
+    chown system system /sys/class/misc/m_alsps_misc/alsactive
+    chown system system /sys/class/misc/m_alsps_misc/alsdelay
+    chown system system /sys/class/misc/m_alsps_misc/alsbatch
+    chown system system /sys/class/misc/m_alsps_misc/alsflush
+    chown system system /sys/class/misc/m_alsps_misc/psactive
+    chown system system /sys/class/misc/m_alsps_misc/psdelay
+    chown system system /sys/class/misc/m_alsps_misc/psbatch
+    chown system system /sys/class/misc/m_alsps_misc/psflush
+
     chmod 0660 /sys/class/misc/m_gyro_misc/gyroenablenodata
     chmod 0660 /sys/class/misc/m_gyro_misc/gyroactive
     chmod 0660 /sys/class/misc/m_gyro_misc/gyrodelay
@@ -165,7 +182,7 @@ on post-fs-data
     chown system media /dev/MJC
 
     # Boot mode
-    chmod 0664 /sys/class/BOOT/BOOT/boot/boot_mode
+    chmod 0666 /sys/class/BOOT/BOOT/boot/boot_mode
     chown system system /sys/class/BOOT/BOOT/boot/boot_mode
 
     # Graphic
@@ -191,7 +208,7 @@ on post-fs-data
     chown root system /sys/autok/stage2/3
 
     # Device info /proc interface
-    chmod 0440 /dev/devmap
+    chmod 0666 /dev/devmap
     chown root system /dev/devmap
 
     # Camera
@@ -215,7 +232,7 @@ on post-fs-data
     chmod 0666 /dev/MTK_SMI
     chown system media /dev/MTK_SMI
 
-    chmod 0660 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
+    chmod 0666 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
     chown system media /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
 
     # MTK_SCHED
