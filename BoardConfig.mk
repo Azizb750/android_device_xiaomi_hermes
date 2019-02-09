@@ -48,6 +48,8 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 
 # Hardware
 BOARD_USES_MTK_HARDWARE := true
+BOARD_HAS_MTK_HARDWARE := true
+MTK_HARDWARE := true
 
 # Display
 BOARD_EGL_CFG := $(LOCAL_PATH)/configs/egl.cfg
