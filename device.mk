@@ -25,14 +25,7 @@ TARGET_OTA_ASSERT_DEVICE := hermes
 PRODUCT_PACKAGES += Snap
 
 # Shim symbols
-PRODUCT_PACKAGES += \
-    libshim_c \
-    libshim_camera_client \
-    libshim_cutils \
-    libshim_media \
-    libshim_stagefright \
-    libshim_ui \
-    libshim_xlog
+PRODUCT_PACKAGES += libmtk_symbols
 
 # Power HAL
 PRODUCT_PACKAGES += power.mt6795
