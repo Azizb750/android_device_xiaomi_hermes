@@ -1,8 +1,3 @@
-# Debug
-ro.secure=0
-ro.adb.secure=0
-ro.debuggable=1
-
 # RIL
 ro.telephony.ril_class=MediaTekRIL
 ro.telephony.ril.config=fakeiccid

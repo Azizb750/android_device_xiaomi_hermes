@@ -6,11 +6,6 @@ on early-init
 on init
    
     export LD_PRELOAD "libmtk_symbols.so"
-    
-    # For debugging:
-    setprop ro.secure=0
-    setprop ro.adb.secure=0
-    setprop ro.debuggable=1
 
     # Protect
     mkdir /protect_f 0771 system system

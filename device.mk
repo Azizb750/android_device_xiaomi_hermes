@@ -281,3 +281,11 @@ PRODUCT_PACKAGES += \
 #PRODUCT_PACKAGES += \
 #    android.hardware.tetheroffload.config@1.0 \
 #    android.hardware.tetheroffload.control@1.0
+
+# needed for logcat
+PRODUCT_PROPERTY_OVERRIDES += \
+persist.service.adb.enable=1 \
+persist.sys.usb.config=mtp,adb \
+ro.debuggable=1 \
+ro.adb.secure=0 \
+ro.secure=0
