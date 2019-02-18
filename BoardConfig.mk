@@ -143,7 +143,7 @@ TARGET_LD_SHIM_LIBS := \
 
 #;32BIT
 TARGET_LD_SHIM_LIBS += \
-		/system/vendor/lib/libsrv_um.so|libutilscallstack.so \
+		/system/vendor/lib/libsrv_um.so|libmtk_symbols.so \
 		/system/vendor/lib/libdpframework.so|libmtk_symbols.so \
 		/system/vendor/lib/libgralloc_extra.so|libmtk_symbols.so \
 		/system/vendor/lib/hw/hwcomposer.mt6795.so|libmtk_symbols.so \
@@ -158,7 +158,7 @@ TARGET_LD_SHIM_LIBS += \
 
 # 64BIT
 TARGET_LD_SHIM_LIBS += \
-		/system/vendor/lib64/libsrv_um.so|libutilscallstack.so \
+		/system/vendor/lib64/libsrv_um.so|libmtk_symbols.so \
 		/system/vendor/lib64/libdpframework.so|libmtk_symbols.so \
 		/system/vendor/lib64/libgralloc_extra.so|libmtk_symbols.so \
 		/system/vendor/lib64/hw/hwcomposer.mt6795.so|libmtk_symbols.so \

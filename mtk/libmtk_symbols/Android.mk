@@ -12,12 +12,13 @@ LOCAL_SRC_FILES := \
     mtk_ui.cpp \
     mtk_gui.cpp \
     mtk_net.cpp \
-    mtk_xlog.cpp
+    mtk_xlog.cpp \
+    mtk_atomic.cpp
 
 # only for 64bit libraries
 LOCAL_SRC_FILES_64 := mtk_parcel.cpp
 
-LOCAL_SHARED_LIBRARIES := libbinder liblog libgui libui libicuuc libicui18n libmedia
+LOCAL_SHARED_LIBRARIES := libbinder liblog libgui libui libicuuc libicui18n libmedia libcutils
 LOCAL_MODULE := libmtk_symbols
 LOCAL_MODULE_TAGS := optional
 
