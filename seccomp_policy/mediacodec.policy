@@ -52,6 +52,8 @@ statfs64: 1
 sched_setscheduler: 1
 fstatat64: 1
 ugetrlimit: 1
+sysinfo: 1
+getcwd: 1
 getdents64: 1
 
 # for attaching to debuggerd on process crash
