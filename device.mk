@@ -169,15 +169,15 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@2.0-impl \
     android.hardware.audio@2.0-service \
     android.hardware.audio.effect@2.0-impl \
-    android.hardware.broadcastradio@1.1-impl
-#    android.hardware.soundtrigger@2.0-impl
+    android.hardware.broadcastradio@1.1-impl \
+    android.hardware.soundtrigger@2.0-impl
 
 # Camera HAL
-#PRODUCT_PACKAGES += \
-#    camera.device@1.0-impl \
-#    camera.device@3.2-impl \
-#    android.hardware.camera.provider@2.4-impl \
-#    android.hardware.camera.provider@2.4-service
+PRODUCT_PACKAGES += \
+    camera.device@1.0-impl \
+    camera.device@3.2-impl \
+    android.hardware.camera.provider@2.4-impl \
+    android.hardware.camera.provider@2.4-service
 
 # ConfigStore HAL
 PRODUCT_PACKAGES += \
