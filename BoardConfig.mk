@@ -154,7 +154,7 @@ TARGET_LD_SHIM_LIBS += \
 		/system/vendor/lib/libcustom_nvram.so|libmtk_symbols.so \
 		/system/vendor/lib/hw/audio.primary.mt6795.so|libmtk_symbols.so \
 		/system/vendor/lib/hw/sensors.mt6795.so|libmtk_symbols.so \
-		/system/vendor/lib/hw/keystore.mt6795.so|libmtk_symbols.so
+		/system/vendor/lib/hw/camera.mt6795.so|libmtk_symbols.so
 
 # 64BIT
 TARGET_LD_SHIM_LIBS += \
@@ -167,7 +167,7 @@ TARGET_LD_SHIM_LIBS += \
 		/system/vendor/lib64/libcustom_nvram.so|libmtk_symbols.so \
 		/system/vendor/lib64/hw/audio.primary.mt6795.so|libmtk_symbols.so \
 		/system/vendor/lib64/hw/sensors.mt6795.so|libmtk_symbols.so \
-		/system/vendor/lib64/hw/keystore.mt6795.so|libmtk_symbols.so
+		/system/vendor/lib64/hw/camera.mt6795.so|libmtk_symbols.so
 
 # Sepolicy
 #BOARD_SEPOLICY_DIRS += device/xiaomi/hermes/sepolicy
